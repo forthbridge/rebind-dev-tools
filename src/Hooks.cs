@@ -47,49 +47,49 @@ namespace RebindDevTools
                 //IL.JetFish.Update += JetFish_Update;
                 //IL.Leech.Update += Leech_Update;
                 //IL.Lizard.Update += Lizard_Update;
-                //IL.NeedleEgg.Update += NeedleEgg_Update;
                 //IL.NeedleWorm.Update += NeedleWorm_Update;
                 //IL.Vulture.Update += Vulture_Update;
                 //IL.Scavenger.Update += Scavenger_Update;
                 //IL.Spider.Update += Spider_Update;
                 //IL.TempleGuard.Update += TempleGuard_Update;
-                
-                //IL.PoleMimic.Update += PoleMimic_Update;
-                //IL.TentaclePlant.Update += TentaclePlant_Update;
-                
-                //IL.Deer.Update += Deer_Update;
+
+                IL.PoleMimic.Update += PoleMimic_Update;
+                IL.TentaclePlant.Update += TentaclePlant_Update;
+
+                IL.Deer.Update += Deer_Update;
                 //IL.DeerAI.Update += DeerAI_Update;
                 //IL.DeerPather.Update += DeerPather_Update;
 
-                //IL.MirosBird.Act += MirosBird_Act;
+                IL.MirosBird.Act += MirosBird_Act;
                 //IL.MirosBird.Update += MirosBird_Update;
                 //IL.MirosBirdPather.FollowPath += MirosBirdPather_FollowPath;
-                                
+
                 IL.Player.Update += Player_Update;
 
-                //IL.MoreSlugcats.Inspector.Update += Inspector_Update;
-                //IL.MoreSlugcats.StowawayBug.Update += StowawayBug_Update;
-                //IL.MoreSlugcats.BigJellyFish.DebugDrag += BigJellyFish_DebugDrag;
-                //IL.MoreSlugcats.Yeek.Update += Yeek_Update;
+                IL.MoreSlugcats.Inspector.Update += Inspector_Update; // Works
+                IL.MoreSlugcats.StowawayBug.Update += StowawayBug_Update; // IDK
+                IL.MoreSlugcats.BigJellyFish.DebugDrag += BigJellyFish_DebugDrag; // Works
+                IL.MoreSlugcats.Yeek.Update += Yeek_Update; // Works
 
 
 
                 //// Objects
-                //IL.DangleFruit.Update += DangleFruit_Update;
-                //IL.EggBugEgg.Update += EggBugEgg_Update;
-                //IL.Lantern.Update += Lantern_Update;
-                //IL.SlimeMold.Update += SlimeMold_Update;
-                //IL.Snail.Update += Snail_Update;
-                //IL.VultureGrub.Update += VultureGrub_Update;
-                //IL.Hazer.Update += Hazer_Update;
-                //IL.SporePlant.Update += SporePlant_Update;
-                //IL.SwollenWaterNut.Update += SwollenWaterNut_Update;
-                //IL.TubeWorm.Update += TubeWorm_Update;
+                IL.NeedleEgg.Update += NeedleEgg_Update; // Works
+                IL.DangleFruit.Update += DangleFruit_Update; // Works
+                IL.EggBugEgg.Update += EggBugEgg_Update; // Works
+                IL.Lantern.Update += Lantern_Update; // Fail
+                IL.SlimeMold.Update += SlimeMold_Update; // Works
+                IL.Snail.Update += Snail_Update; // Works
+                IL.VultureGrub.Update += VultureGrub_Update;
+                IL.Hazer.Update += Hazer_Update; // Works
+                IL.SporePlant.Update += SporePlant_Update; // Works
+                IL.SwollenWaterNut.Update += SwollenWaterNut_Update;
+                IL.TubeWorm.Update += TubeWorm_Update; // Works
 
-                //IL.MoreSlugcats.FireEgg.Update += FireEgg_Update;
-                //IL.MoreSlugcats.DandelionPeach.Update += DandelionPeach_Update;
-                //IL.MoreSlugcats.GlowWeed.Update += GlowWeed_Update;
-                //IL.MoreSlugcats.GooieDuck.Update += GooieDuck_Update;
+                IL.MoreSlugcats.FireEgg.Update += FireEgg_Update; // Works
+                IL.MoreSlugcats.DandelionPeach.Update += DandelionPeach_Update; // Works
+                IL.MoreSlugcats.GlowWeed.Update += GlowWeed_Update; // Works
+                IL.MoreSlugcats.GooieDuck.Update += GooieDuck_Update; // Works
 
 
 
@@ -759,7 +759,7 @@ namespace RebindDevTools
                 c.RemoveRange(2);
                 c.Emit(OpCodes.Ldarg_0);
 
-                c.EmitDelegate<Func<GlowWeed, bool>>((self) =>
+                c.EmitDelegate<Func<MoreSlugcats.GlowWeed, bool>>((self) =>
                 {
                     return Input.GetKey(Options.dragEntities.Value);
                 });
@@ -774,7 +774,7 @@ namespace RebindDevTools
                 c.RemoveRange(2);
                 c.Emit(OpCodes.Ldarg_0);
 
-                c.EmitDelegate<Func<GlowWeed, bool>>((self) =>
+                c.EmitDelegate<Func<MoreSlugcats.GlowWeed, bool>>((self) =>
                 {
                     return Input.GetKey(Options.offsetCamera.Value);
                 });
