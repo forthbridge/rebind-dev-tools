@@ -14,7 +14,7 @@ namespace RebindDevTools
         #region Options
 
         public static Configurable<bool> devToolsEnabledByDefault = instance.config.Bind("devToolsEnabledByDefault", true, new ConfigurableInfo(
-           "When checked, Dev Tools is enabled by default, such as when starting a cycle.",
+           "When checked, Dev Tools is enabled by default in most scenarios, for example when starting a cycle.",
            null, "", "Dev Tools Enabled by Default?"));
 
 
@@ -52,8 +52,8 @@ namespace RebindDevTools
             "Pulls all batflies in the room towards the mouse cursor's location.", null, "", "Pull Batflies"));
 
         public static Configurable<KeyCode> dragEntities = instance.config.Bind("dragEntities", KeyCode.B, new ConfigurableInfo(
-            "Drags all entities towards the mouse cursor's current location." +
-            "\nExcludes Slugcat and Batflies.", null, "", "Drag Entities"));
+            "Drags most types of entities towards the mouse cursor's current location." +
+            "\nExcludes Slugcat, Batflies, Rocks, Spears and most rarer items.", null, "", "Drag Entities"));
 
         public static Configurable<KeyCode> flingVultures = instance.config.Bind("flingVultures", KeyCode.G, new ConfigurableInfo(
             "Flings all vultures in the room skywards.", null, "", "Fling Vultures"));
@@ -72,7 +72,17 @@ namespace RebindDevTools
 
         public static Configurable<KeyCode> toggleConsoleLog = instance.config.Bind("toggleConsoleLog", KeyCode.K, new ConfigurableInfo(
             "Toggles a log displaying all UnityEngine.Debug.Log messages." +
-            "This is the same output as shown in ConsoleLog.txt", null, "", "Toggle Console Log"));
+            "\nThis is the same output as shown in ConsoleLog.txt", null, "", "Toggle Console Log"));
+
+
+        public static Configurable<KeyCode> unloadRooms = instance.config.Bind("unloadRooms", KeyCode.Q, new ConfigurableInfo(
+            "Unloads all rooms that the player is not currently in.", null, "", "Unload Rooms"));
+
+        public static Configurable<KeyCode> setAIDestination = instance.config.Bind("setAIDestination", KeyCode.E, new ConfigurableInfo(
+            "Sets the destination for all nearby creature AI to the mouse cursor's position.", null, "", "Unload Rooms"));
+
+        public static Configurable<KeyCode> quarterPrecycleTime = instance.config.Bind("quarterPrecycleTime", KeyCode.L, new ConfigurableInfo(
+            "Cuts the current precycle (shelter failure) time down by 4 times.", null, "", "Quarter Precycle Time"));
 
         #endregion
 
@@ -115,7 +125,12 @@ namespace RebindDevTools
             int tabIndex = -1;
 
             AddTab(ref tabIndex, "Common");
-            AddNewLine(2);
+            AddNewLine(-1);
+
+            AddCheckBox(devToolsEnabledByDefault, (string)devToolsEnabledByDefault.info.Tags[0]);
+            DrawCheckBoxes(ref Tabs[tabIndex]);
+
+            AddNewLine(3);
 
             DrawKeybinders(toggleDevTools, ref Tabs[tabIndex]);
             DrawKeybinders(toggleDevToolsInterface, ref Tabs[tabIndex]);
@@ -130,8 +145,8 @@ namespace RebindDevTools
             DrawKeybinders(speedUpTime, ref Tabs[tabIndex]);
             DrawKeybinders(slowDownTime, ref Tabs[tabIndex]);
 
-            AddNewLine(3);
             DrawBox(ref Tabs[tabIndex]);
+
 
 
             AddTab(ref tabIndex, "Movement");
@@ -139,15 +154,20 @@ namespace RebindDevTools
 
             DrawKeybinders(teleportSlugcat, ref Tabs[tabIndex]);
             DrawKeybinders(flingSlugcat, ref Tabs[tabIndex]);
-            DrawKeybinders(dragEntities, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
+            DrawKeybinders(dragEntities, ref Tabs[tabIndex]);
             DrawKeybinders(pullBatflies, ref Tabs[tabIndex]);
             DrawKeybinders(flingVultures, ref Tabs[tabIndex]);
-            DrawKeybinders(offsetCamera, ref Tabs[tabIndex]);
 
-            AddNewLine(5);
+            AddNewLine(2);
+
+            DrawKeybinders(offsetCamera, ref Tabs[tabIndex]);
+            DrawKeybinders(setAIDestination, ref Tabs[tabIndex]);
+
+            AddNewLine(1);
+
             DrawBox(ref Tabs[tabIndex]);
 
 
@@ -162,13 +182,16 @@ namespace RebindDevTools
 
             DrawKeybinders(toggleSoundLog, ref Tabs[tabIndex]);
             DrawKeybinders(reloadAllSounds, ref Tabs[tabIndex]);
+            DrawKeybinders(unloadRooms, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
             DrawKeybinders(toggleTileAccessibility, ref Tabs[tabIndex]);
             DrawKeybinders(setMigratoryDesination, ref Tabs[tabIndex]);
+            DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
 
-            AddNewLine(3);
+            AddNewLine(-1);
+
             DrawBox(ref Tabs[tabIndex]);
         }
 

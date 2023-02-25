@@ -34,11 +34,11 @@ namespace RebindDevTools
             try
             {
                 //// Creatures
-                IL.BigEel.Update += BigEel_Update; // FAIL
-                IL.BigSpider.Update += BigSpider_Update; // FAIL
-                IL.Centipede.Update += Centipede_Update; // FAIL
-                IL.Cicada.Update += Cicada_Update; // FAIL
-                IL.DaddyLongLegs.Update += DaddyLongLegs_Update; // FAIL
+                //IL.BigEel.Update += BigEel_Update; // FAIL
+                //IL.BigSpider.Update += BigSpider_Update; // FAIL
+                //IL.Centipede.Update += Centipede_Update; // FAIL
+                //IL.Cicada.Update += Cicada_Update; // FAIL
+                //IL.DaddyLongLegs.Update += DaddyLongLegs_Update; // FAIL
 
                 IL.DropBug.Update += DropBug_Update; // Works
                 IL.EggBug.Update += EggBug_Update; // Works
@@ -95,7 +95,7 @@ namespace RebindDevTools
 
 
                 //// Meta
-                //IL.RainWorldGame.Update += RainWorldGame_Update;
+                IL.RainWorldGame.Update += RainWorldGame_Update;
                 //IL.ForcedVisibilityVisualizer.Update += ForcedVisibilityVisualizer_Update;
                 //IL.RainWorldGame.RawUpdate += RainWorldGame_RawUpdate;
                 //IL.RoomCamera.Update += RoomCamera_Update;
@@ -178,17 +178,164 @@ namespace RebindDevTools
 
         private static void RoomCamera_Update(ILContext il)
         {
-
         }
 
         private static void RainWorldGame_RawUpdate(ILContext il)
         {
-            
+            ILCursor c = new ILCursor(il);
+
+            // Slow Down Time
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("a"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.slowDownTime.Value);
+                });
+            }
+
+
+            // Speed Up Time
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("s"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.speedUpTime.Value);
+                });
+            }
+
+
+            // Unload Rooms
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("q"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.unloadRooms.Value);
+                });
+            }
+
+
+            // Toggle Tile Access
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("p"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.toggleTileAccessibility.Value);
+                });
+            }
+
+
+            // Toggle Debug Info
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("m"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.toggleDebugInfo.Value);
+                });
+            }
+
+
+            // Toggle Console
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("k"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.toggleConsoleLog.Value);
+                });
+            }
+
+
+            // Toggle Main Interface
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("h"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.toggleDevToolsInterface.Value);
+                });
+            }
+
+
+            // Toggle Dev Tools
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("o"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.toggleDevTools.Value);
+                });
+            }
+
+            // TODO: Add L, quarters the precycle timer.
+            // TODO: Add E, sets all Creature AI in the room's current destination to the mouse cursor.
         }
 
         private static void RainWorldGame_Update(ILContext il)
         {
-            
+            ILCursor c = new ILCursor(il);
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("r"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.restartCycle.Value);
+                });
+            }
         }
 
         private static void SlugcatSelectMenu_StartGame(ILContext il)
