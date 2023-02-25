@@ -44,24 +44,25 @@ namespace RebindDevTools
                 //IL.Fly.Update += Fly_Update;
                 //IL.GarbageWorm.Update += GarbageWorm_Update;
                 //IL.JellyFish.Update += JellyFish_Update;
-                //IL.JetFish.Update += JetFish_Update;
-                //IL.Leech.Update += Leech_Update;
-                //IL.Lizard.Update += Lizard_Update;
-                //IL.NeedleWorm.Update += NeedleWorm_Update;
-                //IL.Vulture.Update += Vulture_Update;
-                //IL.Scavenger.Update += Scavenger_Update;
-                //IL.Spider.Update += Spider_Update;
-                //IL.TempleGuard.Update += TempleGuard_Update;
+                IL.JetFish.Update += JetFish_Update; // Works
+                IL.Leech.Update += Leech_Update; // Works
+                IL.Lizard.Update += Lizard_Update; // Works
+                IL.NeedleWorm.Update += NeedleWorm_Update; // Works
+                IL.Vulture.Update += Vulture_Update; // Works
+                IL.Scavenger.Update += Scavenger_Update;
+                IL.Spider.Update += Spider_Update; // Works
+                IL.TempleGuard.Update += TempleGuard_Update; // Works
+                IL.LanternMouse.Update += LanternMouse_Update; // Works
 
-                IL.PoleMimic.Update += PoleMimic_Update;
-                IL.TentaclePlant.Update += TentaclePlant_Update;
+                IL.PoleMimic.Update += PoleMimic_Update; // IDK
+                IL.TentaclePlant.Update += TentaclePlant_Update; // IDK
 
-                IL.Deer.Update += Deer_Update;
+                IL.Deer.Update += Deer_Update; // Works
                 //IL.DeerAI.Update += DeerAI_Update;
                 //IL.DeerPather.Update += DeerPather_Update;
 
-                IL.MirosBird.Act += MirosBird_Act;
-                //IL.MirosBird.Update += MirosBird_Update;
+                IL.MirosBird.Update += MirosBird_Update; // Works
+                //IL.MirosBird.Act += MirosBird_Act;
                 //IL.MirosBirdPather.FollowPath += MirosBirdPather_FollowPath;
 
                 IL.Player.Update += Player_Update;
@@ -114,6 +115,36 @@ namespace RebindDevTools
             }
         }
 
+        private static void LanternMouse_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("b"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<LanternMouse, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.dragEntities.Value);
+                });
+            }
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<LanternMouse, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.flingVultures.Value);
+                });
+            }
+        }
+
         private static void VultureGrub_Update(ILContext il)
         {
             ILCursor c = new ILCursor(il);
@@ -127,6 +158,19 @@ namespace RebindDevTools
                 c.EmitDelegate<Func<VultureGrub, bool>>((self) =>
                 {
                     return Input.GetKey(Options.dragEntities.Value);
+                });
+            }
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("g"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Vulture, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.flingVultures.Value);
                 });
             }
         }
