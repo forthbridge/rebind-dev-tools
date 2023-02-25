@@ -229,20 +229,20 @@ namespace RebindDevTools
             //    });
             //}
 
-            //c.Index = 0;
+            c.Index = 0;
 
-            //while (c.TryGotoNext(
-            //    x => x.MatchLdstr("q"),
-            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            //{
-            //    c.RemoveRange(2);
-            //    c.Emit(OpCodes.Ldarg_0);
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("q"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
 
-            //    c.EmitDelegate<Func<Player, bool>>((self) =>
-            //    {
-            //        return Input.GetKey(Options.feedSlugcat.Value);
-            //    });
-            //}
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.feedSlugcat.Value);
+                });
+            }
         }
 
         private static void NeedleWorm_Update(ILContext il)

@@ -25,8 +25,8 @@ namespace RebindDevTools
         public static Configurable<KeyCode> toggleTileAccessibility = instance.config.Bind("toggleTileAccessibility", KeyCode.P, new ConfigurableInfo(
             "Toggles tile accessibility display for each creature type.", null, "", "Toggle Tile Access"));
 
-        public static Configurable<KeyCode> feedSlugcat = instance.config.Bind("raiseFoodMeter", KeyCode.Q, new ConfigurableInfo(
-            "Raises slugcat's food meter by 1 pip.", null, "", "Raise Food Meter"));
+        public static Configurable<KeyCode> feedSlugcat = instance.config.Bind("feedSlugcat", KeyCode.Q, new ConfigurableInfo(
+            "Raises slugcat's food meter by 1 pip.", null, "", "Feed Slugcat"));
 
         public static Configurable<KeyCode> restartCycle = instance.config.Bind("restartCycle", KeyCode.R, new ConfigurableInfo(
             "Restarts the current cycle.", null, "", "Restart Cycle"));
