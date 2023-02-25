@@ -1,0 +1,12 @@
+{
+	"id": "rebinddevtools",
+	"name": "Rebind Dev Tools",
+	"version": "1.0.0",
+	"target_game_version": "v1.9.06",
+	"authors": "forthbridge",
+	"description": "Provides a Remix config to rebind all of the default Dev Tools keybinds.<LINE><LINE>Does nothing without Dev Tools enabled - ",
+	"requirements": [],
+	"requirements_names": [],
+	"tags": ["Tools"],
+	"checksum_override_version": false
+}
