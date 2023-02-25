@@ -39,11 +39,11 @@ namespace RebindDevTools
                 //IL.Centipede.Update += Centipede_Update;
                 //IL.Cicada.Update += Cicada_Update;
                 //IL.DaddyLongLegs.Update += DaddyLongLegs_Update;
-                //IL.DropBug.Update += DropBug_Update;
-                //IL.EggBug.Update += EggBug_Update;
-                //IL.Fly.Update += Fly_Update;
-                //IL.GarbageWorm.Update += GarbageWorm_Update;
-                //IL.JellyFish.Update += JellyFish_Update;
+                IL.DropBug.Update += DropBug_Update; // Works
+                IL.EggBug.Update += EggBug_Update; // Works
+                IL.Fly.Update += Fly_Update; // Works
+                IL.GarbageWorm.Update += GarbageWorm_Update; // Works
+                IL.JellyFish.Update += JellyFish_Update; // Works
                 IL.JetFish.Update += JetFish_Update; // Works
                 IL.Leech.Update += Leech_Update; // Works
                 IL.Lizard.Update += Lizard_Update; // Works
