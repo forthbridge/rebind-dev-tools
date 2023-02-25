@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using System;
 using System.Security.Permissions;
 using System.Security;
+using UnityEngine;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -30,6 +31,6 @@ namespace RebindDevTools
             Execute("Joar");
         }
 
-        private void Execute(string who) => Logger.LogMessage($"Executed {who} for splitting the binds across literally every creature script, wtf man.");
+        private void Execute(string who) => Debug.Log($"Executed {who} for splitting the binds across literally every creature script, wtf man.");
     }
 }

@@ -77,7 +77,6 @@ namespace RebindDevTools
                 IL.NeedleEgg.Update += NeedleEgg_Update; // Works
                 IL.DangleFruit.Update += DangleFruit_Update; // Works
                 IL.EggBugEgg.Update += EggBugEgg_Update; // Works
-                IL.Lantern.Update += Lantern_Update; // Fail
                 IL.SlimeMold.Update += SlimeMold_Update; // Works
                 IL.Snail.Update += Snail_Update; // Works
                 IL.VultureGrub.Update += VultureGrub_Update;
@@ -1056,38 +1055,6 @@ namespace RebindDevTools
                 c.Emit(OpCodes.Ldarg_0);
 
                 c.EmitDelegate<Func<Leech, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
-        }
-
-        private static void Lantern_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Lantern, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Lantern, bool>>((self) =>
                 {
                     return Input.GetKey(Options.offsetCamera.Value);
                 });
