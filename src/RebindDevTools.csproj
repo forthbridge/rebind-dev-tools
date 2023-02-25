@@ -40,6 +40,9 @@
 		<HintPath>..\..\Backups\Rain World\Rain World References\RainWorld_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
 		<Private>False</Private>
 	</Reference>
+	<Reference Include="UnityEngine.InputLegacyModule">
+	  <HintPath>..\..\Backups\Rain World\Rain World References\RainWorld_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+	</Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
