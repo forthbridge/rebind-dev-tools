@@ -17,7 +17,36 @@ namespace RebindDevTools
 {
     internal static class Hooks
     {
-        public static void ApplyHooks() => On.RainWorld.OnModsInit += RainWorld_OnModsInit;
+        public static void ApplyHooks()
+        {
+            On.RainWorld.OnModsInit += RainWorld_OnModsInit;
+            On.RainWorld.PostModsInit += RainWorld_PostModsInit;
+            On.RainWorldGame.ctor += RainWorldGame_ctor;
+        }
+
+        private static void RainWorld_PostModsInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)
+        {
+            orig(self);
+
+            wasDevToolsActive = Options.devToolsEnabledByDefault.Value;
+        }
+
+        private static bool wasDevToolsActive;
+
+        private static void RainWorldGame_ctor(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
+        {
+            orig(self, manager);
+
+            if (Options.rememberIfEnabled.Value)
+            {
+                self.devToolsActive = wasDevToolsActive;
+                self.devToolsLabel.isVisible = self.devToolsActive;
+                return;
+            }
+
+            self.devToolsActive = Options.devToolsEnabledByDefault.Value;
+            self.devToolsLabel.isVisible = self.devToolsActive;
+        }
 
         private static bool isInit = false;
 
@@ -32,12 +61,12 @@ namespace RebindDevTools
 
             try
             {
-                //// Creatures
-                //IL.BigEel.Update += BigEel_Update; // FAIL
-                //IL.BigSpider.Update += BigSpider_Update; // FAIL
-                //IL.Centipede.Update += Centipede_Update; // FAIL
-                //IL.Cicada.Update += Cicada_Update; // FAIL
-                //IL.DaddyLongLegs.Update += DaddyLongLegs_Update; // FAIL
+                // Creatures
+                IL.BigEel.Update += BigEel_Update; // FAIL
+                IL.BigSpider.Update += BigSpider_Update; // FAIL
+                IL.Centipede.Update += Centipede_Update; // FAIL
+                IL.Cicada.Update += Cicada_Update; // FAIL
+                IL.DaddyLongLegs.Update += DaddyLongLegs_Update; // FAIL
 
                 IL.DropBug.Update += DropBug_Update; // Works
                 IL.EggBug.Update += EggBug_Update; // Works
@@ -58,8 +87,7 @@ namespace RebindDevTools
                 IL.TentaclePlant.Update += TentaclePlant_Update; // Works
 
                 IL.Deer.Update += Deer_Update; // Works
-                //IL.DeerAI.Update += DeerAI_Update;
-                //IL.DeerPather.Update += DeerPather_Update;
+                IL.DeerAI.Update += DeerAI_Update;
 
                 IL.MirosBird.Update += MirosBird_Update; // Works
                 IL.MirosBird.Act += MirosBird_Act;
@@ -73,7 +101,7 @@ namespace RebindDevTools
 
 
 
-                //// Objects
+                // Objects
                 IL.NeedleEgg.Update += NeedleEgg_Update; // Works
                 IL.DangleFruit.Update += DangleFruit_Update; // Works
                 IL.EggBugEgg.Update += EggBugEgg_Update; // Works
@@ -91,8 +119,16 @@ namespace RebindDevTools
                 IL.MoreSlugcats.GooieDuck.Update += GooieDuck_Update; // Works
 
 
+                // Misc
+                IL.AboveCloudsView.Update += AboveCloudsView_Update;
+                IL.DevInterface.CustomDecalRepresentation.Update += CustomDecalRepresentation_Update;
+                IL.DevInterface.Handle.Update += Handle_Update;
+                IL.DevInterface.MapPage.Update += MapPage_Update;
+                IL.DevInterface.MapPage.Signal += MapPage_Signal;
+                IL.DevInterface.MiniMap.Update += MiniMap_Update;
 
-                //// Meta
+
+                // Meta
                 IL.RainWorldGame.Update += RainWorldGame_Update;
                 IL.RainWorldGame.RawUpdate += RainWorldGame_RawUpdate;
                 IL.ForcedVisibilityVisualizer.Update += ForcedVisibilityVisualizer_Update;
@@ -101,7 +137,7 @@ namespace RebindDevTools
 
 
 
-                //// Menus
+                // Menus
                 IL.Menu.Menu.Update += Menu_Update;
                 IL.Menu.MenuScene.Update += MenuScene_Update;
                 IL.Menu.SlideShowMenuScene.Update += SlideShowMenuScene_Update;
@@ -113,6 +149,136 @@ namespace RebindDevTools
                 Plugin.Logger.LogError(ex);
             }
         }
+
+
+
+        private static void MiniMap_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+
+            // Change Minimap Layer
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.changeMinimapLayer.Value));
+            }
+            c.Index = 0;
+        }
+
+        private static void MapPage_Signal(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+
+            // Change Minimap Layer (check if not pressed)
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.changeMinimapLayer.Value));
+            }
+            c.Index = 0;
+        }
+
+        private static void MapPage_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+
+            // Toggle View Node Labels
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("j"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleViewNodeLabels.Value));
+            }
+            c.Index = 0;
+        }
+
+        private static void Handle_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+
+            // Change Handle Colour
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("b"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.changeHandleColor.Value));
+            }
+            c.Index = 0;
+        }
+
+        private static void CustomDecalRepresentation_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+
+            // Set Handles
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("l"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.setHandles.Value));
+            }
+            c.Index = 0;
+
+            // Increase Handles
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("k"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.increaseHandles.Value));
+            }
+            c.Index = 0;
+
+            // Decrease Handles
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("j"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.decreaseHandles.Value));
+            }
+            c.Index = 0;
+        }
+
+        private static void AboveCloudsView_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+
+            // Move Clouds View Object
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("t"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.moveCloudsViewObject.Value));
+            }
+            c.Index = 0;
+        }
+
+
 
         private static void RainWorldGame_RawUpdate(ILContext il)
         {
@@ -210,7 +376,11 @@ namespace RebindDevTools
                 c.Index += 2;
                 c.Emit(OpCodes.Pop);
                 c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleDevTools.Value));
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) =>
+                {
+                    wasDevToolsActive = self.devToolsActive;
+                    return Input.GetKey(Options.toggleDevTools.Value);
+                });
             }
             c.Index = 0;
 
@@ -757,33 +927,30 @@ namespace RebindDevTools
         private static void Vulture_Update(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
+
+            // Drag Entity
+            while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("b"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
-                c.RemoveRange(2);
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
                 c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Vulture, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
             }
-
             c.Index = 0;
 
-            while (c.TryGotoNext(
+            // Fling Vultures
+            while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("g"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
-                c.RemoveRange(2);
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
                 c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Vulture, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.flingVultures.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.flingVultures.Value));
             }
+            c.Index = 0;
         }
 
         private static void TubeWorm_Update(ILContext il)
@@ -1077,33 +1244,18 @@ namespace RebindDevTools
         private static void PoleMimic_Update(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
+
+            // Drag Entity
+            while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("b"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
-                c.RemoveRange(2);
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
                 c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<PoleMimic, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
             }
-
             c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<PoleMimic, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
         }
 
         private static void NeedleWorm_Update(ILContext il)

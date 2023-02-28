@@ -14,9 +14,12 @@ namespace RebindDevTools
         #region Options
 
         public static Configurable<bool> devToolsEnabledByDefault = instance.config.Bind("devToolsEnabledByDefault", true, new ConfigurableInfo(
-           "When checked, Dev Tools is enabled by default in most scenarios, for example when starting a cycle.",
-           null, "", "Dev Tools Enabled by Default?"));
+           "When checked, Dev Tools is enabled by default when starting a cycle.",
+           null, "", "Enabled by Default?"));
 
+        public static Configurable<bool> rememberIfEnabled = instance.config.Bind("rememberIfEnabled", true, new ConfigurableInfo(
+           "When checked, Dev Tools being enabled / disabled persists through cycles.",
+           null, "", "Remember If Enabled?"));
 
 
         public static Configurable<KeyCode> toggleDevTools = instance.config.Bind("toggleDevTools", KeyCode.O, new ConfigurableInfo(
@@ -57,6 +60,9 @@ namespace RebindDevTools
             "\nExcludes Slugcat, Batflies, Rocks, Spears and most rarer items.", null, "", "Drag Entities"));
 
 
+        public static Configurable<KeyCode> dragObjects = instance.config.Bind("dragObjects", KeyCode.B, new ConfigurableInfo(
+            "Drags most objects (excluding creatures) towards the mouse's position"));
+
 
 
         public static Configurable<KeyCode> flingVultures = instance.config.Bind("flingVultures", KeyCode.G, new ConfigurableInfo(
@@ -66,13 +72,10 @@ namespace RebindDevTools
             "Offsets the camera slightly in the direction of the mouse while held.", null, "", "Offset Camera"));
 
         public static Configurable<KeyCode> setMigratoryDesination = instance.config.Bind("setMigratoryDesination", KeyCode.E, new ConfigurableInfo(
-            "Sets the migratory destination of every creature in the region to the current room.", null, "", "Set Migration"));
+            "Sets the migratory destination of every creature in the region to the current room.", null, "", "Set Migratory Destination"));
 
         public static Configurable<KeyCode> reloadAllSounds = instance.config.Bind("reloadAllSounds", KeyCode.U, new ConfigurableInfo(
             "Reloads all sound samples.", null, "", "Reload Sounds"));
-
-        public static Configurable<KeyCode> toggleSoundLog = instance.config.Bind("toggleSoundLog", KeyCode.I, new ConfigurableInfo(
-            "Toggles a log of all sound effects that have been played.", null, "", "Toggle Sound Log"));
 
         public static Configurable<KeyCode> toggleConsoleLog = instance.config.Bind("toggleConsoleLog", KeyCode.K, new ConfigurableInfo(
             "Toggles a log displaying all UnityEngine.Debug.Log messages." +
@@ -122,8 +125,33 @@ namespace RebindDevTools
             "???", null, "", "Test Play Scene"));
 
 
+
         public static Configurable<KeyCode> mirosAntiGravity = instance.config.Bind("mirosAntiGravity", KeyCode.T, new ConfigurableInfo(
-            "???", null, "", "Miros Anti Gravity"));
+            "???", null, "", "Disable Miros Bird Gravity"));
+
+
+
+        public static Configurable<KeyCode> changeMinimapLayer = instance.config.Bind("changeMinimapLayer", KeyCode.N, new ConfigurableInfo(
+            "???", null, "", "Change Minimap Layer"));
+
+        public static Configurable<KeyCode> toggleViewNodeLabels = instance.config.Bind("toggleViewNodeLabels", KeyCode.J, new ConfigurableInfo(
+            "???", null, "", "Toggle View Node Labels"));
+
+        public static Configurable<KeyCode> changeHandleColor = instance.config.Bind("changeHandleColor", KeyCode.M, new ConfigurableInfo(
+            "???", null, "", "Change Handle Color"));
+
+        public static Configurable<KeyCode> setHandles = instance.config.Bind("setHandles", KeyCode.I, new ConfigurableInfo(
+            "???", null, "", "Set Handles"));
+
+        public static Configurable<KeyCode> increaseHandles = instance.config.Bind("increaseHandles", KeyCode.N, new ConfigurableInfo(
+            "???", null, "", "Increase Handles"));
+
+        public static Configurable<KeyCode> decreaseHandles = instance.config.Bind("decreaseHandles", KeyCode.J, new ConfigurableInfo(
+            "???", null, "", "Decrease Handles"));
+
+        public static Configurable<KeyCode> moveCloudsViewObject = instance.config.Bind("moveCloudsViewObject", KeyCode.M, new ConfigurableInfo(
+            "???", null, "", "Move Clouds View Object"));
+
 
 
         public static Configurable<KeyCode> speedUpStartGame = instance.config.Bind("speedUpStartGame", KeyCode.S, new ConfigurableInfo(
@@ -162,7 +190,7 @@ namespace RebindDevTools
         private readonly List<OpLabel> textLabels = new();
         #endregion
 
-        private const int NUMBER_OF_TABS = 4;
+        private const int NUMBER_OF_TABS = 5;
 
         public override void Initialize()
         {
@@ -170,10 +198,12 @@ namespace RebindDevTools
             Tabs = new OpTab[NUMBER_OF_TABS];
             int tabIndex = -1;
 
-            AddTab(ref tabIndex, "Common");
+            #region General
+            AddTab(ref tabIndex, "General");
             AddNewLine(-1);
 
             AddCheckBox(devToolsEnabledByDefault, (string)devToolsEnabledByDefault.info.Tags[0]);
+            AddCheckBox(rememberIfEnabled, (string)rememberIfEnabled.info.Tags[0]);
             DrawCheckBoxes(ref Tabs[tabIndex]);
 
             AddNewLine(3);
@@ -195,9 +225,10 @@ namespace RebindDevTools
             AddNewLine(-1);
 
             DrawBox(ref Tabs[tabIndex]);
+            #endregion
 
 
-
+            #region Movement
             AddTab(ref tabIndex, "Movement");
             AddNewLine(2);
 
@@ -216,12 +247,13 @@ namespace RebindDevTools
             DrawKeybinders(setAIDestination, ref Tabs[tabIndex]);
             DrawKeybinders(setMigratoryDesination, ref Tabs[tabIndex]);
 
-            AddNewLine(-1);
+            AddNewLine(0);
 
             DrawBox(ref Tabs[tabIndex]);
+            #endregion
 
 
-
+            #region Debugging
             AddTab(ref tabIndex, "Debugging");
             AddNewLine(2);
 
@@ -230,7 +262,6 @@ namespace RebindDevTools
 
             AddNewLine(2);
 
-            DrawKeybinders(toggleSoundLog, ref Tabs[tabIndex]);
             DrawKeybinders(visualizeSounds, ref Tabs[tabIndex]);
             DrawKeybinders(reloadAllSounds, ref Tabs[tabIndex]);
             DrawKeybinders(unloadRooms, ref Tabs[tabIndex]);
@@ -241,12 +272,37 @@ namespace RebindDevTools
             DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
             DrawKeybinders(mirosAntiGravity, ref Tabs[tabIndex]);
 
-            AddNewLine(-1);
+            AddNewLine(0);
 
             DrawBox(ref Tabs[tabIndex]);
+            #endregion
 
 
+            #region Dev Interface
+            AddTab(ref tabIndex, "Dev Interface");
+            AddNewLine(2);
 
+            DrawKeybinders(moveCloudsViewObject, ref Tabs[tabIndex]);
+
+            AddNewLine(2);  
+
+            DrawKeybinders(changeMinimapLayer, ref Tabs[tabIndex]);
+            DrawKeybinders(toggleViewNodeLabels, ref Tabs[tabIndex]);
+
+            AddNewLine(2);
+
+            DrawKeybinders(setHandles, ref Tabs[tabIndex]);
+            DrawKeybinders(increaseHandles, ref Tabs[tabIndex]);
+            DrawKeybinders(decreaseHandles, ref Tabs[tabIndex]);
+            DrawKeybinders(changeHandleColor, ref Tabs[tabIndex]);
+
+            AddNewLine(2);
+
+            DrawBox(ref Tabs[tabIndex]);
+            #endregion
+
+
+            #region Scene Editor
             AddTab(ref tabIndex, "Scene Editor");
             AddNewLine(2);
 
@@ -265,6 +321,7 @@ namespace RebindDevTools
             AddNewLine(2);
 
             DrawBox(ref Tabs[tabIndex]);
+            #endregion
         }
 
         #region UI Elements
