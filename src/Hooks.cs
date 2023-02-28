@@ -121,7 +121,7 @@ namespace RebindDevTools
         private static void Player_Update(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
+            while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("v"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey"),
                 x => x.MatchLdloc(32),
@@ -139,21 +139,23 @@ namespace RebindDevTools
 
             c.Index = 0;
 
-//            while (c.TryGotoNext(
-//                x => x.MatchLdstr("w"),
-//                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-//            {
-//                c.RemoveRange(2);
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("w"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
 
-//                c.Emit(OpCodes.Ldarg_0);
-//                c.EmitDelegate<Func<Player, bool>>((self) => Input.GetKey(Options.flingSlugcat.Value));
-//;
-//                Plugin.Logger.LogWarning(c.Context);
-//            }
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.flingSlugcat.Value);
+                });
+            }
 
             c.Index = 0;
 
-            while (c.TryGotoNext(
+            while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("q"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
