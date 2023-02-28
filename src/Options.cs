@@ -251,13 +251,13 @@ namespace RebindDevTools
             string name = (string)configurable.info.Tags[0];
 
             tab.AddItems(
-                new OpLabel(new Vector2(80.0f, pos.y), new Vector2(100f, 34f), name)
+                new OpLabel(new Vector2(100.0f, pos.y), new Vector2(100f, 34f), name)
                 {
                     alignment = FLabelAlignment.Right,
                     verticalAlignment = OpLabel.LabelVAlignment.Center,
                     description = configurable.info?.description
                 },
-                new OpKeyBinder(configurable, new Vector2(200.0f, pos.y), new Vector2(146f, 30f), false)
+                new OpKeyBinder(configurable, new Vector2(220.0f, pos.y), new Vector2(146f, 30f), false)
             );
 
             AddNewLine(2);

@@ -95,9 +95,9 @@ namespace RebindDevTools
 
 
                 //// Meta
-                IL.RainWorldGame.Update += RainWorldGame_Update;
+                IL.RainWorldGame.Update += RainWorldGame_Update; // Works
+                IL.RainWorldGame.RawUpdate += RainWorldGame_RawUpdate;
                 //IL.ForcedVisibilityVisualizer.Update += ForcedVisibilityVisualizer_Update;
-                //IL.RainWorldGame.RawUpdate += RainWorldGame_RawUpdate;
                 //IL.RoomCamera.Update += RoomCamera_Update;
                 //IL.VirtualMicrophone.Update += VirtualMicrophone_Update;
 
@@ -137,23 +137,19 @@ namespace RebindDevTools
                 });
             }
 
-            //c.Index = 0;
+            c.Index = 0;
 
-            //while (c.TryGotoNext(
-            //    x => x.MatchLdstr("w"),
-            //    x => x.MatchCallOrCallvirt<Input>("GetKey"),
-            //    x => x.MatchLdloc(32),
-            //    x => x.MatchAnd(),
-            //    x => x.MatchBrfalse(out _)))
-            //{
-            //    c.RemoveRange(2);
-            //    c.Emit(OpCodes.Ldarg_0);
+//            while (c.TryGotoNext(
+//                x => x.MatchLdstr("w"),
+//                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+//            {
+//                c.RemoveRange(2);
 
-            //    c.EmitDelegate<Func<Player, bool>>((self) =>
-            //    {
-            //        return Input.GetKey(Options.flingSlugcat.Value);
-            //    });
-            //}
+//                c.Emit(OpCodes.Ldarg_0);
+//                c.EmitDelegate<Func<Player, bool>>((self) => Input.GetKey(Options.flingSlugcat.Value));
+//;
+//                Plugin.Logger.LogWarning(c.Context);
+//            }
 
             c.Index = 0;
 
@@ -199,123 +195,130 @@ namespace RebindDevTools
             }
 
 
-            // Speed Up Time
-            c.Index = 0;
+            //// Speed Up Time
+            //// Does not work
+            //c.Index = 0;
 
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("s"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            //while (c.TryGotoNext(
+            //    x => x.MatchLdstr("s"),
+            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            //{
+            //    // 230, should be 228?
+            //    Plugin.Logger.LogWarning(c.Index);
 
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.speedUpTime.Value);
-                });
-            }
+            //    c.RemoveRange(2);
+            //    c.Emit(OpCodes.Ldarg_0);
 
+            //    c.EmitDelegate<Func<Player, bool>>((self) =>
+            //    {
+            //        return Input.GetKey(Options.speedUpTime.Value);
+            //    });
 
-            // Unload Rooms
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("q"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.unloadRooms.Value);
-                });
-            }
+            //    Plugin.Logger.LogWarning("Reaches this point");
+            //    // Fails here?
+            //}
 
 
-            // Toggle Tile Access
-            c.Index = 0;
+            //// Unload Rooms
+            //c.Index = 0;
 
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("p"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            //while (c.TryGotoNext(
+            //    x => x.MatchLdstr("q"),
+            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            //{
+            //    c.RemoveRange(2);
+            //    c.Emit(OpCodes.Ldarg_0);
 
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleTileAccessibility.Value);
-                });
-            }
-
-
-            // Toggle Debug Info
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("m"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleDebugInfo.Value);
-                });
-            }
+            //    c.EmitDelegate<Func<Player, bool>>((self) =>
+            //    {
+            //        return Input.GetKey(Options.unloadRooms.Value);
+            //    });
+            //}
 
 
-            // Toggle Console
-            c.Index = 0;
+            //// Toggle Tile Access
+            //c.Index = 0;
 
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("k"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            //while (c.TryGotoNext(
+            //    x => x.MatchLdstr("p"),
+            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            //{
+            //    c.RemoveRange(2);
+            //    c.Emit(OpCodes.Ldarg_0);
 
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleConsoleLog.Value);
-                });
-            }
-
-
-            // Toggle Main Interface
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("h"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleDevToolsInterface.Value);
-                });
-            }
+            //    c.EmitDelegate<Func<Player, bool>>((self) =>
+            //    {
+            //        return Input.GetKey(Options.toggleTileAccessibility.Value);
+            //    });
+            //}
 
 
-            // Toggle Dev Tools
-            c.Index = 0;
+            //// Toggle Debug Info
+            //c.Index = 0;
 
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("o"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            //while (c.TryGotoNext(
+            //    x => x.MatchLdstr("m"),
+            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            //{
+            //    c.RemoveRange(2);
+            //    c.Emit(OpCodes.Ldarg_0);
 
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleDevTools.Value);
-                });
-            }
+            //    c.EmitDelegate<Func<Player, bool>>((self) =>
+            //    {
+            //        return Input.GetKey(Options.toggleDebugInfo.Value);
+            //    });
+            //}
+
+
+            //// Toggle Console
+            //c.Index = 0;
+
+            //while (c.TryGotoNext(
+            //    x => x.MatchLdstr("k"),
+            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            //{
+            //    c.RemoveRange(2);
+            //    c.Emit(OpCodes.Ldarg_0);
+
+            //    c.EmitDelegate<Func<Player, bool>>((self) =>
+            //    {
+            //        return Input.GetKey(Options.toggleConsoleLog.Value);
+            //    });
+            //}
+
+
+            //// Toggle Main Interface
+            //c.Index = 0;
+
+            //while (c.TryGotoNext(
+            //    x => x.MatchLdstr("h"),
+            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            //{
+            //    c.RemoveRange(2);
+            //    c.Emit(OpCodes.Ldarg_0);
+
+            //    c.EmitDelegate<Func<Player, bool>>((self) =>
+            //    {
+            //        return Input.GetKey(Options.toggleDevToolsInterface.Value);
+            //    });
+            //}
+
+
+            //// Toggle Dev Tools
+            //c.Index = 0;
+
+            //while (c.TryGotoNext(
+            //    x => x.MatchLdstr("o"),
+            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            //{
+            //    c.RemoveRange(2);
+            //    c.Emit(OpCodes.Ldarg_0);
+
+            //    c.EmitDelegate<Func<Player, bool>>((self) =>
+            //    {
+            //        return Input.GetKey(Options.toggleDevTools.Value);
+            //    });
+            //}
 
             // TODO: Add L, quarters the precycle timer.
             // TODO: Add E, sets all Creature AI in the room's current destination to the mouse cursor.
@@ -338,35 +341,73 @@ namespace RebindDevTools
             }
         }
 
-        private static void SlugcatSelectMenu_StartGame(ILContext il)
-        {
-
-        }
-
-        private static void CameraMovementEditor_Update(ILContext il)
-        {
-
-        }
-
-        private static void SlideShowMenuScene_Update(ILContext il)
-        {
-
-        }
-
-        private static void MenuScene_Update(ILContext il)
-        {
-
-        }
-
         private static void Menu_Update(ILContext il)
         {
+            ILCursor c = new ILCursor(il);
 
+            // Slow Down Time
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("a"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.slowDownTime.Value);
+                });
+            }
+
+            // Speed Up Time
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("s"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Player, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.speedUpTime.Value);
+                });
+            }
         }
 
         private static void ForcedVisibilityVisualizer_Update(ILContext il)
         {
             
         }
+
+
+
+
+        // UNIQUE
+        private static void SlugcatSelectMenu_StartGame(ILContext il)
+        {
+
+        }
+
+        // UNIQUE
+        private static void CameraMovementEditor_Update(ILContext il)
+        {
+
+        }
+
+        // UNIQUE
+        private static void SlideShowMenuScene_Update(ILContext il)
+        {
+
+        }
+
+        // UNIQUE
+        private static void MenuScene_Update(ILContext il)
+        {
+
+        }
+
 
 
 
@@ -501,6 +542,170 @@ namespace RebindDevTools
 
 
 
+        private static void DaddyLongLegs_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("b"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<DaddyLongLegs, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.dragEntities.Value);
+                });
+            }
+
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<DaddyLongLegs, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.offsetCamera.Value);
+                });
+            }
+        }
+
+        private static void Cicada_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("b"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Cicada, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.dragEntities.Value);
+                });
+            }
+
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Cicada, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.offsetCamera.Value);
+                });
+            }
+        }
+
+        private static void Centipede_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("b"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Centipede, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.dragEntities.Value);
+                });
+            }
+
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<Centipede, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.offsetCamera.Value);
+                });
+            }
+        }
+
+        private static void BigSpider_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("b"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<BigSpider, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.dragEntities.Value);
+                });
+            }
+
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<BigSpider, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.offsetCamera.Value);
+                });
+            }
+        }
+
+        private static void BigEel_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("b"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<BigEel, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.dragEntities.Value);
+                });
+            }
+
+            c.Index = 0;
+
+            while (c.TryGotoNext(
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.RemoveRange(2);
+                c.Emit(OpCodes.Ldarg_0);
+
+                c.EmitDelegate<Func<BigEel, bool>>((self) =>
+                {
+                    return Input.GetKey(Options.offsetCamera.Value);
+                });
+            }
+        }
+
+
+
+
+        // I'm never touching this again
         private static void LanternMouse_Update(ILContext il)
         {
             ILCursor c = new ILCursor(il);
@@ -1643,166 +1848,6 @@ namespace RebindDevTools
                 c.Emit(OpCodes.Ldarg_0);
 
                 c.EmitDelegate<Func<DangleFruit, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
-        }
-
-        private static void DaddyLongLegs_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<DaddyLongLegs, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<DaddyLongLegs, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
-        }
-
-        private static void Cicada_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Cicada, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Cicada, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
-        }
-
-        private static void Centipede_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Centipede, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Centipede, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
-        }
-
-        private static void BigSpider_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<BigSpider, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<BigSpider, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
-        }
-
-        private static void BigEel_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<BigEel, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<BigEel, bool>>((self) =>
                 {
                     return Input.GetKey(Options.offsetCamera.Value);
                 });
