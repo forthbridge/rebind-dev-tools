@@ -18,6 +18,7 @@ namespace RebindDevTools
            null, "", "Dev Tools Enabled by Default?"));
 
 
+
         public static Configurable<KeyCode> toggleDevTools = instance.config.Bind("toggleDevTools", KeyCode.O, new ConfigurableInfo(
             "Toggles Dev Mode, indicated by yellow text at the top of the screen, showing the current room.", null, "", "Toggle Dev Tools"));
 
@@ -55,6 +56,9 @@ namespace RebindDevTools
             "Drags most types of entities towards the mouse cursor's current location." +
             "\nExcludes Slugcat, Batflies, Rocks, Spears and most rarer items.", null, "", "Drag Entities"));
 
+
+
+
         public static Configurable<KeyCode> flingVultures = instance.config.Bind("flingVultures", KeyCode.G, new ConfigurableInfo(
             "Flings all vultures in the room skywards.", null, "", "Fling Vultures"));
 
@@ -75,6 +79,8 @@ namespace RebindDevTools
             "\nThis is the same output as shown in ConsoleLog.txt", null, "", "Toggle Console Log"));
 
 
+
+
         public static Configurable<KeyCode> unloadRooms = instance.config.Bind("unloadRooms", KeyCode.Q, new ConfigurableInfo(
             "Unloads all rooms that the player is not currently in.", null, "", "Unload Rooms"));
 
@@ -86,6 +92,43 @@ namespace RebindDevTools
 
         public static Configurable<KeyCode> visualizeSounds = instance.config.Bind("visualizeSounds", KeyCode.I, new ConfigurableInfo(
             "Visualises all sounds emitted by creatures and toggles a log of currently playing sounds.", null, "", "Visualize Sounds"));
+
+
+
+        public static Configurable<KeyCode> addPoint = instance.config.Bind("addPoint", KeyCode.J, new ConfigurableInfo(
+            "???", null, "", "Add Point"));
+
+        public static Configurable<KeyCode> removePoint = instance.config.Bind("removePoint", KeyCode.K, new ConfigurableInfo(
+            "???", null, "", "Remove Point"));
+
+        public static Configurable<KeyCode> moveAllPoints = instance.config.Bind("moveAllPoints", KeyCode.L, new ConfigurableInfo(
+            "???", null, "", "Move All Points"));
+
+        public static Configurable<KeyCode> changeDepthOfPoint = instance.config.Bind("changeDepthOfPoint", KeyCode.O, new ConfigurableInfo(
+            "???", null, "", "Change Depth of Point"));
+
+
+
+        public static Configurable<KeyCode> moveMenuScene = instance.config.Bind("moveMenuScene", KeyCode.N, new ConfigurableInfo(
+            "???", null, "", "Move Menu Scene"));
+
+        public static Configurable<KeyCode> saveMenuScene = instance.config.Bind("saveMenuScene", KeyCode.B, new ConfigurableInfo(
+            "???", null, "", "Save Menu Scene"));
+
+        public static Configurable<KeyCode> moveSceneEditor = instance.config.Bind("moveSceneEditor", KeyCode.M, new ConfigurableInfo(
+            "???", null, "", "Move Scene Editor"));
+
+        public static Configurable<KeyCode> testPlayScene = instance.config.Bind("testPlayScene", KeyCode.I, new ConfigurableInfo(
+            "???", null, "", "Test Play Scene"));
+
+
+        public static Configurable<KeyCode> mirosAntiGravity = instance.config.Bind("mirosAntiGravity", KeyCode.T, new ConfigurableInfo(
+            "???", null, "", "Miros Anti Gravity"));
+
+
+        public static Configurable<KeyCode> speedUpStartGame = instance.config.Bind("speedUpStartGame", KeyCode.S, new ConfigurableInfo(
+            "Speeds up the New Game or Continue buttons when held.", null, "", "Speed Up Start Game"));
+
 
         #endregion
 
@@ -119,7 +162,7 @@ namespace RebindDevTools
         private readonly List<OpLabel> textLabels = new();
         #endregion
 
-        private const int NUMBER_OF_TABS = 3;
+        private const int NUMBER_OF_TABS = 4;
 
         public override void Initialize()
         {
@@ -147,6 +190,9 @@ namespace RebindDevTools
 
             DrawKeybinders(speedUpTime, ref Tabs[tabIndex]);
             DrawKeybinders(slowDownTime, ref Tabs[tabIndex]);
+            DrawKeybinders(speedUpStartGame, ref Tabs[tabIndex]);
+
+            AddNewLine(-1);
 
             DrawBox(ref Tabs[tabIndex]);
 
@@ -193,8 +239,30 @@ namespace RebindDevTools
 
             DrawKeybinders(toggleTileAccessibility, ref Tabs[tabIndex]);
             DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
+            DrawKeybinders(mirosAntiGravity, ref Tabs[tabIndex]);
 
             AddNewLine(-1);
+
+            DrawBox(ref Tabs[tabIndex]);
+
+
+
+            AddTab(ref tabIndex, "Scene Editor");
+            AddNewLine(2);
+
+            DrawKeybinders(moveMenuScene, ref Tabs[tabIndex]);
+            DrawKeybinders(saveMenuScene, ref Tabs[tabIndex]);
+            DrawKeybinders(moveSceneEditor, ref Tabs[tabIndex]);
+            DrawKeybinders(testPlayScene, ref Tabs[tabIndex]);
+
+            AddNewLine(2);
+
+            DrawKeybinders(addPoint, ref Tabs[tabIndex]);
+            DrawKeybinders(removePoint, ref Tabs[tabIndex]);
+            DrawKeybinders(moveAllPoints, ref Tabs[tabIndex]);
+            DrawKeybinders(changeDepthOfPoint, ref Tabs[tabIndex]);
+
+            AddNewLine(2);
 
             DrawBox(ref Tabs[tabIndex]);
         }
