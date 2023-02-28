@@ -117,10 +117,10 @@ namespace RebindDevTools
 
 
         public static Configurable<KeyCode> moveMenuScene = instance.config.Bind("moveMenuScene", KeyCode.N, new ConfigurableInfo(
-            "???", null, "", "Move Menu Scene"));
+            "Allows the hovered part of the current menu scene to be moved freely.", null, "", "Move Menu Scene"));
 
         public static Configurable<KeyCode> saveMenuScene = instance.config.Bind("saveMenuScene", KeyCode.B, new ConfigurableInfo(
-            "???", null, "", "Save Menu Scene"));
+            "Saves the current menu scene to disk.", null, "", "Save Menu Scene"));
 
         public static Configurable<KeyCode> moveSceneEditor = instance.config.Bind("moveSceneEditor", KeyCode.M, new ConfigurableInfo(
             "???", null, "", "Move Scene Editor"));
@@ -154,7 +154,7 @@ namespace RebindDevTools
             "???", null, "", "Decrease Handles"));
 
         public static Configurable<KeyCode> moveCloudsViewObject = instance.config.Bind("moveCloudsViewObject", KeyCode.M, new ConfigurableInfo(
-            "???", null, "", "Move Clouds View Object"));
+            "Allows the hovered part of the current background AboveCloudsView to be moved freely.", null, "", "Move Clouds View Object"));
 
         public static Configurable<KeyCode> speedUpStartGame = instance.config.Bind("speedUpStartGame", KeyCode.S, new ConfigurableInfo(
             "Speeds up the New Game or Continue buttons when held.", null, "", "Speed Up Start Game"));
