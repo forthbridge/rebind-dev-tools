@@ -37,6 +37,8 @@ namespace RebindDevTools
         {
             orig(self, manager);
 
+            if (!ModManager.DevTools) return;
+
             if (Options.rememberIfEnabled.Value)
             {
                 self.devToolsActive = wasDevToolsActive;
