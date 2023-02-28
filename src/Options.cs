@@ -21,6 +21,10 @@ namespace RebindDevTools
            "When checked, Dev Tools being enabled / disabled persists through cycles.",
            null, "", "Remember If Enabled?"));
 
+        public static Configurable<bool> entranceJumperEnabled = instance.config.Bind("entranceJumperEnabled", true, new ConfigurableInfo(
+           "When checked, jump to a specific entrance in a room by pressing its corresponding numpad index.",
+           null, "", "Pipe Jumper Enabled?"));
+
 
         public static Configurable<KeyCode> toggleDevTools = instance.config.Bind("toggleDevTools", KeyCode.O, new ConfigurableInfo(
             "Toggles Dev Mode, indicated by yellow text at the top of the screen, showing the current room.", null, "", "Toggle Dev Tools"));
@@ -152,11 +156,30 @@ namespace RebindDevTools
         public static Configurable<KeyCode> moveCloudsViewObject = instance.config.Bind("moveCloudsViewObject", KeyCode.M, new ConfigurableInfo(
             "???", null, "", "Move Clouds View Object"));
 
-
-
         public static Configurable<KeyCode> speedUpStartGame = instance.config.Bind("speedUpStartGame", KeyCode.S, new ConfigurableInfo(
             "Speeds up the New Game or Continue buttons when held.", null, "", "Speed Up Start Game"));
 
+
+
+        public static Configurable<KeyCode> cycleJumper = instance.config.Bind("cycleJumper", KeyCode.Alpha0, new ConfigurableInfo(
+            "When held, enables the cycle jumper. Press one of the following keybinds to jump to a specific point in the cycle.", null, "", "Enable Cycle Jumper"));
+
+        public static Configurable<KeyCode> earlyCycle = instance.config.Bind("earlyCycle", KeyCode.LeftShift, new ConfigurableInfo(
+            "When the cycle jumper keybind is held, jumps to early in the cycle.", null, "", "Early Cycle"));
+
+        public static Configurable<KeyCode> midCycle = instance.config.Bind("midCycle", KeyCode.LeftAlt, new ConfigurableInfo(
+            "When the cycle jumper keybind is held, jumps to around the middle of the cycle.", null, "", "Mid Cycle"));
+
+        public static Configurable<KeyCode> lateCycle = instance.config.Bind("lateCycle", KeyCode.LeftControl, new ConfigurableInfo(
+            "When the cycle jumper keybind is held, jumps to late in the cycle.", null, "", "Late Cycle"));
+
+
+        public static Configurable<KeyCode> resetRain = instance.config.Bind("resetRain", KeyCode.Alpha9, new ConfigurableInfo(
+            "Resets the rain timer in the current cycle.", null, "", "Reset Rain"));
+
+
+        public static Configurable<KeyCode> killAllCreatures = instance.config.Bind("killAllCreatures", KeyCode.Alpha8, new ConfigurableInfo(
+            "Kills all the creatures (except the player) in the current room.", null, "", "Kill All Creatures"));
 
         #endregion
 
@@ -190,7 +213,7 @@ namespace RebindDevTools
         private readonly List<OpLabel> textLabels = new();
         #endregion
 
-        private const int NUMBER_OF_TABS = 5;
+        private const int NUMBER_OF_TABS = 6;
 
         public override void Initialize()
         {
@@ -247,6 +270,11 @@ namespace RebindDevTools
             DrawKeybinders(setAIDestination, ref Tabs[tabIndex]);
             DrawKeybinders(setMigratoryDesination, ref Tabs[tabIndex]);
 
+            AddNewLine(-3);
+
+            AddCheckBox(entranceJumperEnabled, (string)entranceJumperEnabled.info.Tags[0]);
+            DrawCheckBoxes(ref Tabs[tabIndex]);
+
             AddNewLine(0);
 
             DrawBox(ref Tabs[tabIndex]);
@@ -259,6 +287,7 @@ namespace RebindDevTools
 
             DrawKeybinders(toggleDebugInfo, ref Tabs[tabIndex]);
             DrawKeybinders(toggleConsoleLog, ref Tabs[tabIndex]);
+            DrawKeybinders(killAllCreatures, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
@@ -269,7 +298,6 @@ namespace RebindDevTools
             AddNewLine(2);
 
             DrawKeybinders(toggleTileAccessibility, ref Tabs[tabIndex]);
-            DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
             DrawKeybinders(mirosAntiGravity, ref Tabs[tabIndex]);
 
             AddNewLine(0);
@@ -297,6 +325,29 @@ namespace RebindDevTools
             DrawKeybinders(changeHandleColor, ref Tabs[tabIndex]);
 
             AddNewLine(2);
+
+            DrawBox(ref Tabs[tabIndex]);
+            #endregion
+
+
+            #region Cycle Jumper
+            AddTab(ref tabIndex, "Cycle Jumper");
+            AddNewLine(2);
+
+            DrawKeybinders(cycleJumper, ref Tabs[tabIndex]);
+
+            AddNewLine(2);
+
+            DrawKeybinders(earlyCycle, ref Tabs[tabIndex]);
+            DrawKeybinders(midCycle, ref Tabs[tabIndex]);
+            DrawKeybinders(lateCycle, ref Tabs[tabIndex]);
+
+            AddNewLine(2);
+
+            DrawKeybinders(resetRain, ref Tabs[tabIndex]);
+            DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
+
+            AddNewLine(4);
 
             DrawBox(ref Tabs[tabIndex]);
             #endregion
@@ -380,13 +431,13 @@ namespace RebindDevTools
             string name = (string)configurable.info.Tags[0];
 
             tab.AddItems(
-                new OpLabel(new Vector2(100.0f, pos.y), new Vector2(100f, 34f), name)
+                new OpLabel(new Vector2(115.0f, pos.y), new Vector2(100f, 34f), name)
                 {
                     alignment = FLabelAlignment.Right,
                     verticalAlignment = OpLabel.LabelVAlignment.Center,
                     description = configurable.info?.description
                 },
-                new OpKeyBinder(configurable, new Vector2(220.0f, pos.y), new Vector2(146f, 30f), false)
+                new OpKeyBinder(configurable, new Vector2(235.0f, pos.y), new Vector2(146f, 30f), false)
             );
 
             AddNewLine(2);

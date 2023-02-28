@@ -143,6 +143,9 @@ namespace RebindDevTools
                 IL.Menu.SlideShowMenuScene.Update += SlideShowMenuScene_Update;
                 IL.Menu.SlideShowMenuScene.CameraMovementEditor.Update += CameraMovementEditor_Update;
                 IL.Menu.SlugcatSelectMenu.StartGame += SlugcatSelectMenu_StartGame;
+
+
+                IL.Player.ProcessDebugInputs += Player_ProcessDebugInputs;
             }
             catch (Exception ex)
             {
@@ -150,7 +153,98 @@ namespace RebindDevTools
             }
         }
 
+        private static void Player_ProcessDebugInputs(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
 
+            // Cycle Jumper
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("0"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.cycleJumper.Value));
+            }
+            c.Index = 0;
+
+            // Reset Rain
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("9"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.resetRain.Value));
+            }
+            c.Index = 0;
+
+            // Kill All Creatures
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("8"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.killAllCreatures.Value));
+            }
+            c.Index = 0;
+
+            // Early Cycle
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdcI4(304),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.earlyCycle.Value));
+            }
+            c.Index = 0;
+
+            // Mid Cycle
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdcI4(308),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.midCycle.Value));
+            }
+            c.Index = 0;
+
+            // Late Cycle
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdcI4(306),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.lateCycle.Value));
+            }
+            c.Index = 0;
+
+            ILLabel dest = null!;
+
+            // Enable/Disable Pipe Jumping
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdloc(1),
+                x => x.MatchCallOrCallvirt<Input>("GetKey"),
+                x => x.MatchBrfalse(out dest)))
+            {
+                c.MoveAfterLabels();
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Options.entranceJumperEnabled.Value);
+                c.Emit(OpCodes.Brfalse, dest);
+                break;
+            }
+            c.Index = 0;
+        }
 
         private static void MiniMap_Update(ILContext il)
         {
