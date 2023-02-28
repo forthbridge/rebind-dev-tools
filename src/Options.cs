@@ -79,10 +79,13 @@ namespace RebindDevTools
             "Unloads all rooms that the player is not currently in.", null, "", "Unload Rooms"));
 
         public static Configurable<KeyCode> setAIDestination = instance.config.Bind("setAIDestination", KeyCode.E, new ConfigurableInfo(
-            "Sets the destination for all nearby creature AI to the mouse cursor's position.", null, "", "Unload Rooms"));
+            "Sets the destination for all nearby creature AI to the mouse cursor's position.", null, "", "Set AI Destination"));
 
         public static Configurable<KeyCode> quarterPrecycleTime = instance.config.Bind("quarterPrecycleTime", KeyCode.L, new ConfigurableInfo(
             "Cuts the current precycle (shelter failure) time down by 4 times.", null, "", "Quarter Precycle Time"));
+
+        public static Configurable<KeyCode> visualizeSounds = instance.config.Bind("visualizeSounds", KeyCode.I, new ConfigurableInfo(
+            "Visualises all sounds emitted by creatures and toggles a log of currently playing sounds.", null, "", "Visualize Sounds"));
 
         #endregion
 
@@ -165,8 +168,9 @@ namespace RebindDevTools
 
             DrawKeybinders(offsetCamera, ref Tabs[tabIndex]);
             DrawKeybinders(setAIDestination, ref Tabs[tabIndex]);
+            DrawKeybinders(setMigratoryDesination, ref Tabs[tabIndex]);
 
-            AddNewLine(1);
+            AddNewLine(-1);
 
             DrawBox(ref Tabs[tabIndex]);
 
@@ -181,13 +185,13 @@ namespace RebindDevTools
             AddNewLine(2);
 
             DrawKeybinders(toggleSoundLog, ref Tabs[tabIndex]);
+            DrawKeybinders(visualizeSounds, ref Tabs[tabIndex]);
             DrawKeybinders(reloadAllSounds, ref Tabs[tabIndex]);
             DrawKeybinders(unloadRooms, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
             DrawKeybinders(toggleTileAccessibility, ref Tabs[tabIndex]);
-            DrawKeybinders(setMigratoryDesination, ref Tabs[tabIndex]);
             DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
 
             AddNewLine(-1);

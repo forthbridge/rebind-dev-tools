@@ -1,4 +1,5 @@
-﻿using IL.MoreSlugcats;
+﻿using IL.Menu.Remix.MixedUI;
+using IL.MoreSlugcats;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MoreSlugcats;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Media;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace RebindDevTools
 {
@@ -97,14 +99,14 @@ namespace RebindDevTools
                 //// Meta
                 IL.RainWorldGame.Update += RainWorldGame_Update; // Works
                 IL.RainWorldGame.RawUpdate += RainWorldGame_RawUpdate;
-                //IL.ForcedVisibilityVisualizer.Update += ForcedVisibilityVisualizer_Update;
-                //IL.RoomCamera.Update += RoomCamera_Update;
-                //IL.VirtualMicrophone.Update += VirtualMicrophone_Update;
+                IL.ForcedVisibilityVisualizer.Update += ForcedVisibilityVisualizer_Update;
+                IL.RoomCamera.Update += RoomCamera_Update;
+                IL.VirtualMicrophone.Update += VirtualMicrophone_Update;
 
 
 
                 //// Menus
-                //IL.Menu.Menu.Update += Menu_Update;
+                IL.Menu.Menu.Update += Menu_Update;
                 //IL.Menu.MenuScene.Update += MenuScene_Update;
                 //IL.Menu.SlideShowMenuScene.Update += SlideShowMenuScene_Update;
                 //IL.Menu.SlideShowMenuScene.CameraMovementEditor.Update += CameraMovementEditor_Update;
@@ -116,305 +118,293 @@ namespace RebindDevTools
             }
         }
         
+        private static void RainWorldGame_RawUpdate(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
 
+            // Slow Down Time
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("a"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.slowDownTime.Value));
+            }
+            c.Index = 0;
+
+            // Speed Up Time
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("s"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.speedUpTime.Value));
+            }
+            c.Index = 0;
+
+            // Unload Rooms
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("q"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.unloadRooms.Value));
+            }
+            c.Index = 0;
+
+            // Toggle Tile Accessibility
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("p"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleTileAccessibility.Value));
+            }
+            c.Index = 0;
+
+            // Toggle Debug Info
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("m"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleDebugInfo.Value));
+            }
+            c.Index = 0;
+
+            // Toggle Console Log
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("k"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleConsoleLog.Value));
+            }
+            c.Index = 0;
+
+            // Toggle Main Interface
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("h"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleDevToolsInterface.Value));
+            }
+            c.Index = 0;
+
+            // Toggle Dev Tools
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("o"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleDevTools.Value));
+            }
+            c.Index = 0;
+
+            // Quarter Precycle Time
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("l"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.quarterPrecycleTime.Value));
+            }
+            c.Index = 0;
+
+            // Set AI Destination
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("e"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.setAIDestination.Value));
+            }
+            c.Index = 0;
+        }
+
+        private static void RainWorldGame_Update(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+
+            // Restart Cycle
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("r"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.restartCycle.Value));
+            }
+            c.Index = 0;
+        }
 
         private static void Player_Update(ILContext il)
         {
             ILCursor c = new ILCursor(il);
+
+            // Teleport Slugcat
             while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("v"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey"),
-                x => x.MatchLdloc(32),
-                x => x.MatchAnd(),
-                x => x.MatchBrfalse(out _)))
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
-                c.RemoveRange(2);
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
                 c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.teleportSlugcat.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.teleportSlugcat.Value));
             }
-
             c.Index = 0;
 
+            // Fling Slugcat
             while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("w"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
                 c.Index += 2;
                 c.Emit(OpCodes.Pop);
-
                 c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.flingSlugcat.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.flingSlugcat.Value));
             }
-
             c.Index = 0;
 
+            // Feed Slugcat
             while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("q"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
-                c.RemoveRange(2);
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
                 c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.feedSlugcat.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.feedSlugcat.Value));
             }
+            c.Index = 0;
         }
 
         private static void VirtualMicrophone_Update(ILContext il)
         {
-            
+            ILCursor c = new ILCursor(il);
+
+            // Set AI Destination
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("u"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.reloadAllSounds.Value));
+            }
+            c.Index = 0;
+
+            // Visualize Sounds
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("i"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.visualizeSounds.Value));
+            }
+            c.Index = 0;
         }
 
         private static void RoomCamera_Update(ILContext il)
         {
-        }
-
-        private static void RainWorldGame_RawUpdate(ILContext il)
-        {
             ILCursor c = new ILCursor(il);
 
-            // Slow Down Time
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("a"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.slowDownTime.Value);
-                });
-            }
-
-
-            //// Speed Up Time
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("s"),
+            // Offset Camera
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("n"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
                 c.Index += 2;
                 c.Emit(OpCodes.Pop);
-
                 c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.speedUpTime.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.offsetCamera.Value));
             }
-
-
-            //// Unload Rooms
             c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("q"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.unloadRooms.Value);
-                });
-            }
-
-
-            // Toggle Tile Access
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("p"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleTileAccessibility.Value);
-                });
-            }
-
-
-            // Toggle Debug Info
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("m"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleDebugInfo.Value);
-                });
-            }
-
-
-            // Toggle Console
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("k"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleConsoleLog.Value);
-                });
-            }
-
-
-            // Toggle Main Interface
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("h"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleDevToolsInterface.Value);
-                });
-            }
-
-
-            // Toggle Dev Tools
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("o"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.toggleDevTools.Value);
-                });
-            }
-
-            // Quarter Precycle Timer
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("l"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.quarterPrecycleTime.Value);
-                });
-            }
-
-            // Set AI destination to mouse
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("e"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.setAIDestination.Value);
-                });
-            }
         }
 
-        private static void RainWorldGame_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("r"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.restartCycle.Value);
-                });
-            }
-        }
-
+        
         private static void Menu_Update(ILContext il)
         {
             ILCursor c = new ILCursor(il);
 
             // Slow Down Time
-            while (c.TryGotoNext(
+            while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("a"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
-                c.RemoveRange(2);
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
                 c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.slowDownTime.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.slowDownTime.Value));
             }
-
-            // Speed Up Time
             c.Index = 0;
 
-            while (c.TryGotoNext(
+            // Speed up Time
+            while (c.TryGotoNext(MoveType.Before,
                 x => x.MatchLdstr("s"),
                 x => x.MatchCallOrCallvirt<Input>("GetKey")))
             {
-                c.RemoveRange(2);
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
                 c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Player, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.speedUpTime.Value);
-                });
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.speedUpTime.Value));
             }
+            c.Index = 0;
         }
 
         private static void ForcedVisibilityVisualizer_Update(ILContext il)
         {
-            
+            ILCursor c = new ILCursor(il);
+
+            // ???
+            //while (c.TryGotoNext(MoveType.Before,
+            //    x => x.MatchLdstr("b"),
+            //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            //{
+            //    c.Index += 2;
+            //    c.Emit(OpCodes.Pop);
+            //    c.Emit(OpCodes.Ldarg_0);
+            //    c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.offsetCamera.Value));
+            //}
+            //c.Index = 0;
+
+            // Offset Camera
+            while (c.TryGotoNext(MoveType.Before,
+                x => x.MatchLdstr("n"),
+                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            {
+                c.Index += 2;
+                c.Emit(OpCodes.Pop);
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.offsetCamera.Value));
+            }
+            c.Index = 0;
         }
-
-
 
 
         // UNIQUE
@@ -737,8 +727,8 @@ namespace RebindDevTools
 
 
 
-
         // I'm never touching this again
+        // (maybe I'll redo it if I somehow find the will lol)
         private static void LanternMouse_Update(ILContext il)
         {
             ILCursor c = new ILCursor(il);
