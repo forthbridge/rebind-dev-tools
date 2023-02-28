@@ -61,11 +61,11 @@ namespace RebindDevTools
 
         public static Configurable<KeyCode> dragEntities = instance.config.Bind("dragEntities", KeyCode.B, new ConfigurableInfo(
             "Drags most types of entities towards the mouse cursor's current location." +
-            "\nExcludes Slugcat, Batflies, Rocks, Spears and most rarer items.", null, "", "Drag Entities"));
+            "\nExcludes Slugcat, Batflies, Rocks, Spears and most rarer items.", null, "", "Drag Creatures"));
 
 
         public static Configurable<KeyCode> dragObjects = instance.config.Bind("dragObjects", KeyCode.B, new ConfigurableInfo(
-            "Drags most objects (excluding creatures) towards the mouse's position"));
+            "Drags most objects (excluding creatures) towards the mouse's position", null, "", "Drag Objects"));
 
 
 
@@ -181,6 +181,17 @@ namespace RebindDevTools
         public static Configurable<KeyCode> killAllCreatures = instance.config.Bind("killAllCreatures", KeyCode.Alpha8, new ConfigurableInfo(
             "Kills all the creatures (except the player) in the current room.", null, "", "Kill All Creatures"));
 
+
+        public static Configurable<KeyCode> spawnSpearmasterPearl = instance.config.Bind("spawnSpearmasterPearl", KeyCode.Alpha5, new ConfigurableInfo(
+            "Spawns Spearmaster's Stomach Pearl at the player's location.", null, "", "Spawn Spearmaster Pearl"));
+
+        public static Configurable<KeyCode> spawnHunterNeuron = instance.config.Bind("spawnHunterNeuron", KeyCode.Alpha6, new ConfigurableInfo(
+            "Spawns Hunter's Green Neuron (NSHSwarmer) at the player's location.", null, "", "Spawn Hunter Neuron"));
+
+
+        public static Configurable<KeyCode> spawnRivuletCell = instance.config.Bind("spawnRivuletCell", KeyCode.Alpha7, new ConfigurableInfo(
+            "Spawns Rivulet's Mass Rarefaction Cell at the player's location.", null, "", "Spawn Rivulet Cell"));
+
         #endregion
 
         #region Parameters
@@ -261,21 +272,21 @@ namespace RebindDevTools
             AddNewLine(2);
 
             DrawKeybinders(dragEntities, ref Tabs[tabIndex]);
+            DrawKeybinders(dragObjects, ref Tabs[tabIndex]);
+
             DrawKeybinders(pullBatflies, ref Tabs[tabIndex]);
             DrawKeybinders(flingVultures, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
             DrawKeybinders(offsetCamera, ref Tabs[tabIndex]);
-            DrawKeybinders(setAIDestination, ref Tabs[tabIndex]);
-            DrawKeybinders(setMigratoryDesination, ref Tabs[tabIndex]);
 
-            AddNewLine(-3);
+            AddNewLine(-2);
 
             AddCheckBox(entranceJumperEnabled, (string)entranceJumperEnabled.info.Tags[0]);
             DrawCheckBoxes(ref Tabs[tabIndex]);
 
-            AddNewLine(0);
+            AddNewLine(1);
 
             DrawBox(ref Tabs[tabIndex]);
             #endregion
@@ -298,9 +309,40 @@ namespace RebindDevTools
             AddNewLine(2);
 
             DrawKeybinders(toggleTileAccessibility, ref Tabs[tabIndex]);
-            DrawKeybinders(mirosAntiGravity, ref Tabs[tabIndex]);
+            DrawKeybinders(setAIDestination, ref Tabs[tabIndex]);
+            DrawKeybinders(setMigratoryDesination, ref Tabs[tabIndex]);
+            //DrawKeybinders(mirosAntiGravity, ref Tabs[tabIndex]);
 
-            AddNewLine(0);
+            AddNewLine(-2);
+
+            DrawBox(ref Tabs[tabIndex]);
+            #endregion
+
+
+            #region Cycle & Items
+            AddTab(ref tabIndex, "Cycle & Items");
+            AddNewLine(2);
+
+            DrawKeybinders(cycleJumper, ref Tabs[tabIndex]);
+
+            AddNewLine(1);
+
+            DrawKeybinders(earlyCycle, ref Tabs[tabIndex]);
+            DrawKeybinders(midCycle, ref Tabs[tabIndex]);
+            DrawKeybinders(lateCycle, ref Tabs[tabIndex]);
+
+            AddNewLine(1);
+
+            DrawKeybinders(resetRain, ref Tabs[tabIndex]);
+            DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
+
+            AddNewLine(2);
+
+            DrawKeybinders(spawnSpearmasterPearl, ref Tabs[tabIndex]);
+            DrawKeybinders(spawnHunterNeuron, ref Tabs[tabIndex]);
+            DrawKeybinders(spawnRivuletCell, ref Tabs[tabIndex]);
+
+            AddNewLine(-2);
 
             DrawBox(ref Tabs[tabIndex]);
             #endregion
@@ -325,29 +367,6 @@ namespace RebindDevTools
             DrawKeybinders(changeHandleColor, ref Tabs[tabIndex]);
 
             AddNewLine(2);
-
-            DrawBox(ref Tabs[tabIndex]);
-            #endregion
-
-
-            #region Cycle Jumper
-            AddTab(ref tabIndex, "Cycle Jumper");
-            AddNewLine(2);
-
-            DrawKeybinders(cycleJumper, ref Tabs[tabIndex]);
-
-            AddNewLine(2);
-
-            DrawKeybinders(earlyCycle, ref Tabs[tabIndex]);
-            DrawKeybinders(midCycle, ref Tabs[tabIndex]);
-            DrawKeybinders(lateCycle, ref Tabs[tabIndex]);
-
-            AddNewLine(2);
-
-            DrawKeybinders(resetRain, ref Tabs[tabIndex]);
-            DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
-
-            AddNewLine(4);
 
             DrawBox(ref Tabs[tabIndex]);
             #endregion
