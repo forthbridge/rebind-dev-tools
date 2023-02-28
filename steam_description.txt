@@ -1,0 +1,7 @@
+[h1]Provides a Remix config to rebind all of the default Dev Tools keybinds![/h1]
+
+[h1]Also provides config for whether Dev Tools should be enabled by default or not, and allows the setting to persist between cycles![/h1]
+
+[b]Does not actually require Dev Tools to be enabled, though the mod will do very little without it. Only the "Speed Up Start Game" rebind will have any effect.[/b]
+
+[b][u]Source: https://github.com/forthbridge/rebind-dev-tools[/u][/b]
