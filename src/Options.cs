@@ -13,7 +13,7 @@ namespace RebindDevTools
 
         #region Options
 
-        public static Configurable<bool> devToolsEnabledByDefault = instance.config.Bind("devToolsEnabledByDefault", true, new ConfigurableInfo(
+        public static Configurable<bool> devToolsEnabledByDefault = instance.config.Bind("devToolsEnabledByDefault", false, new ConfigurableInfo(
            "When checked, Dev Tools is enabled by default when starting a cycle.",
            null, "", "Enabled by Default?"));
 
