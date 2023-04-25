@@ -1,17 +1,8 @@
-﻿using IL.Menu.Remix.MixedUI;
-using IL.MoreSlugcats;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using MoreSlugcats;
-using On;
-using Smoke;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Media;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
+
 
 namespace RebindDevTools
 {
@@ -20,105 +11,80 @@ namespace RebindDevTools
         public static void ApplyHooks()
         {
             On.RainWorld.OnModsInit += RainWorld_OnModsInit;
+
             On.RainWorld.PostModsInit += RainWorld_PostModsInit;
             On.RainWorldGame.ctor += RainWorldGame_ctor;
         }
 
-        private static void RainWorld_PostModsInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)
-        {
-            orig(self);
-
-            wasDevToolsActive = Options.devToolsEnabledByDefault.Value;
-        }
-
-        private static bool wasDevToolsActive;
-
-        private static void RainWorldGame_ctor(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
-        {
-            orig(self, manager);
-
-            if (!ModManager.DevTools) return;
-
-            if (Options.rememberIfEnabled.Value)
-            {
-                self.devToolsActive = wasDevToolsActive;
-                self.devToolsLabel.isVisible = self.devToolsActive;
-                return;
-            }
-
-            self.devToolsActive = Options.devToolsEnabledByDefault.Value;
-            self.devToolsLabel.isVisible = self.devToolsActive;
-        }
 
         private static bool isInit = false;
 
         private static void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
         {
-            orig(self);
-
-            if (isInit) return;
-            isInit = true;
-
-            MachineConnector.SetRegisteredOI(Plugin.MOD_ID, Options.instance);
-
             try
             {
+                if (isInit) return;
+                isInit = true;
+
+                MachineConnector.SetRegisteredOI(Plugin.MOD_ID, Options.instance);
+
+
                 // Creatures
-                IL.BigEel.Update += BigEel_Update; // FAIL
-                IL.BigSpider.Update += BigSpider_Update; // FAIL
-                IL.Centipede.Update += Centipede_Update; // FAIL
-                IL.Cicada.Update += Cicada_Update; // FAIL
-                IL.DaddyLongLegs.Update += DaddyLongLegs_Update; // FAIL
+                IL.BigEel.Update += BigEel_Update;
+                IL.BigSpider.Update += BigSpider_Update;
+                IL.Centipede.Update += Centipede_Update;
+                IL.Cicada.Update += Cicada_Update;
+                IL.DaddyLongLegs.Update += DaddyLongLegs_Update;
 
-                IL.DropBug.Update += DropBug_Update; // Works
-                IL.EggBug.Update += EggBug_Update; // Works
-                IL.Fly.Update += Fly_Update; // Works
-                IL.GarbageWorm.Update += GarbageWorm_Update; // Works
-                IL.JellyFish.Update += JellyFish_Update; // Works
-                IL.JetFish.Update += JetFish_Update; // Works
-                IL.Leech.Update += Leech_Update; // Works
-                IL.Lizard.Update += Lizard_Update; // Works
-                IL.NeedleWorm.Update += NeedleWorm_Update; // Works
-                IL.Vulture.Update += Vulture_Update; // Works
+                IL.DropBug.Update += DropBug_Update;
+                IL.EggBug.Update += EggBug_Update;
+                IL.Fly.Update += Fly_Update; // F to fling instead of B
+                IL.GarbageWorm.Update += GarbageWorm_Update;
+                IL.JellyFish.Update += JellyFish_Update;
+                IL.JetFish.Update += JetFish_Update;
+                IL.Leech.Update += Leech_Update;
+                IL.Lizard.Update += Lizard_Update;
+                IL.NeedleWorm.Update += NeedleWorm_Update;
+                IL.Vulture.Update += Vulture_Update; // G to fling skywards
                 IL.Scavenger.Update += Scavenger_Update;
-                IL.Spider.Update += Spider_Update; // Works
-                IL.TempleGuard.Update += TempleGuard_Update; // Works
-                IL.LanternMouse.Update += LanternMouse_Update; // Works
+                IL.Spider.Update += Spider_Update;
+                IL.TempleGuard.Update += TempleGuard_Update;
+                IL.LanternMouse.Update += LanternMouse_Update;
 
-                IL.PoleMimic.Update += PoleMimic_Update; // FAIL
-                IL.TentaclePlant.Update += TentaclePlant_Update; // Works
+                IL.PoleMimic.Update += PoleMimic_Update;
+                IL.TentaclePlant.Update += TentaclePlant_Update;
 
-                IL.Deer.Update += Deer_Update; // Works
+                IL.Deer.Update += Deer_Update;
                 IL.DeerAI.Update += DeerAI_Update;
 
-                IL.MirosBird.Update += MirosBird_Update; // Works
-                //IL.MirosBird.Act += MirosBird_Act;
+                IL.MirosBird.Update += MirosBird_Update;
+                //IL.MirosBird.Act += MirosBird_Act; // this is completely broken
 
                 IL.Player.Update += Player_Update;
 
-                IL.MoreSlugcats.Inspector.Update += Inspector_Update; // Works
-                IL.MoreSlugcats.StowawayBug.Update += StowawayBug_Update; // IDK
-                IL.MoreSlugcats.BigJellyFish.DebugDrag += BigJellyFish_DebugDrag; // Works
-                IL.MoreSlugcats.Yeek.Update += Yeek_Update; // Works
+                IL.MoreSlugcats.Inspector.Update += Inspector_Update;
+                IL.MoreSlugcats.StowawayBug.Update += StowawayBug_Update; // no clue if this works LMAO
+                IL.MoreSlugcats.BigJellyFish.DebugDrag += BigJellyFish_DebugDrag;
+                IL.MoreSlugcats.Yeek.Update += Yeek_Update;
 
 
 
                 // Objects
-                IL.NeedleEgg.Update += NeedleEgg_Update; // Works
-                IL.DangleFruit.Update += DangleFruit_Update; // Works
-                IL.EggBugEgg.Update += EggBugEgg_Update; // Works
-                IL.SlimeMold.Update += SlimeMold_Update; // Works
-                IL.Snail.Update += Snail_Update; // Works
+                IL.NeedleEgg.Update += NeedleEgg_Update;
+                IL.DangleFruit.Update += DangleFruit_Update;
+                IL.EggBugEgg.Update += EggBugEgg_Update;
+                IL.SlimeMold.Update += SlimeMold_Update;
+                IL.Snail.Update += Snail_Update;
                 IL.VultureGrub.Update += VultureGrub_Update;
-                IL.Hazer.Update += Hazer_Update; // Works
-                IL.SporePlant.Update += SporePlant_Update; // Works
+                IL.Hazer.Update += Hazer_Update;
+                IL.SporePlant.Update += SporePlant_Update;
                 IL.SwollenWaterNut.Update += SwollenWaterNut_Update;
-                IL.TubeWorm.Update += TubeWorm_Update; // Works
+                IL.TubeWorm.Update += TubeWorm_Update;
 
-                IL.MoreSlugcats.FireEgg.Update += FireEgg_Update; // Works
-                IL.MoreSlugcats.DandelionPeach.Update += DandelionPeach_Update; // Works
-                IL.MoreSlugcats.GlowWeed.Update += GlowWeed_Update; // Works
-                IL.MoreSlugcats.GooieDuck.Update += GooieDuck_Update; // Works
+                IL.MoreSlugcats.FireEgg.Update += FireEgg_Update;
+                IL.MoreSlugcats.DandelionPeach.Update += DandelionPeach_Update;
+                IL.MoreSlugcats.GlowWeed.Update += GlowWeed_Update;
+                IL.MoreSlugcats.GooieDuck.Update += GooieDuck_Update;
 
 
                 // Misc
@@ -146,542 +112,300 @@ namespace RebindDevTools
                 IL.Menu.SlideShowMenuScene.CameraMovementEditor.Update += CameraMovementEditor_Update;
                 IL.Menu.SlugcatSelectMenu.StartGame += SlugcatSelectMenu_StartGame;
 
-
                 IL.Player.ProcessDebugInputs += Player_ProcessDebugInputs;
             }
             catch (Exception ex)
             {
                 Plugin.Logger.LogError(ex);
             }
+            finally
+            {
+                orig(self);
+            }
         }
 
-        private static void Player_ProcessDebugInputs(ILContext il)
+
+
+        private static bool wasDevToolsActive = false;
+
+        private static void RainWorld_PostModsInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)
         {
-            ILCursor c = new ILCursor(il);
+            orig(self);
 
-            // Cycle Jumper
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("0"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            try
             {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.cycleJumper.Value));
+                wasDevToolsActive = Options.devToolsEnabledByDefault.Value;
             }
-            c.Index = 0;
-
-            // Reset Rain
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("9"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            catch (Exception ex)
             {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.resetRain.Value));
+                Plugin.Logger.LogError("PostModsInit: " + ex);
             }
-            c.Index = 0;
-
-            // Kill All Creatures
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("8"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.killAllCreatures.Value));
-            }
-            c.Index = 0;
-
-            // Early Cycle
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdcI4(304),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.earlyCycle.Value));
-            }
-            c.Index = 0;
-
-            // Mid Cycle
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdcI4(308),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.midCycle.Value));
-            }
-            c.Index = 0;
-
-            // Late Cycle
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdcI4(306),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.lateCycle.Value));
-            }
-            c.Index = 0;
-
-            ILLabel dest = null!;
-
-            // Enable/Disable Pipe Jumping
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdloc(1),
-                x => x.MatchCallOrCallvirt<Input>("GetKey"),
-                x => x.MatchBrfalse(out dest)))
-            {
-                c.MoveAfterLabels();
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Options.entranceJumperEnabled.Value);
-                c.Emit(OpCodes.Brfalse, dest);
-                break;
-            }
-            c.Index = 0;
-
-
-            // Spawn Spearmaster Pearl
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("5"),
-                x => x.MatchCallOrCallvirt<Input>("GetKeyDown")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKeyDown(Options.spawnSpearmasterPearl.Value));
-            }
-            c.Index = 0;
-
-            // Spawn Hunter Neuron
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("6"),
-                x => x.MatchCallOrCallvirt<Input>("GetKeyDown")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKeyDown(Options.spawnHunterNeuron.Value));
-            }
-            c.Index = 0;
-
-            // Spawn Rivulet Cell
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("7"),
-                x => x.MatchCallOrCallvirt<Input>("GetKeyDown")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKeyDown(Options.spawnRivuletCell.Value));
-            }
-            c.Index = 0;
         }
 
-
-        private static void MiniMap_Update(ILContext il)
+        private static void RainWorldGame_ctor(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
         {
-            ILCursor c = new ILCursor(il);
+            orig(self, manager);
 
-            // Change Minimap Layer
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            try
             {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.changeMinimapLayer.Value));
+                if (!ModManager.DevTools) return;
+
+                if (Options.rememberIfEnabled.Value)
+                {
+                    self.devToolsActive = wasDevToolsActive;
+                    self.devToolsLabel.isVisible = self.devToolsActive;
+                }
+                else
+                {
+                    self.devToolsActive = Options.devToolsEnabledByDefault.Value;
+                    self.devToolsLabel.isVisible = self.devToolsActive;
+                }
             }
-            c.Index = 0;
+            catch (Exception ex)
+            {
+                Plugin.Logger.LogError("RainWorldGame_ctor: " + ex);
+            }
         }
 
-        private static void MapPage_Signal(ILContext il)
+
+
+        private static void RebindKeyIL(ILCursor c, string key, Func<bool> inputAction, bool getKeyDown=false, int? keyCode=null)
         {
-            ILCursor c = new ILCursor(il);
+            int rebinds = 0;
 
-            // Change Minimap Layer (check if not pressed)
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            try
             {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.changeMinimapLayer.Value));
+                c.Index = 0;
+
+                if (keyCode == null)
+                {
+                    while (c.TryGotoNext(MoveType.After,
+                        x => x.MatchLdstr(key),
+                        x => x.MatchCallOrCallvirt<Input>(getKeyDown ? nameof(Input.GetKeyDown) : nameof(Input.GetKey))))
+                    {
+                        c.Emit(OpCodes.Pop);
+                        c.EmitDelegate(inputAction);
+                        
+                        rebinds++;
+                    }
+                }
+                else
+                {
+                    while (c.TryGotoNext(MoveType.After,
+                        x => x.MatchLdcI4((int)keyCode),
+                        x => x.MatchCallOrCallvirt<Input>(getKeyDown ? nameof(Input.GetKeyDown) : nameof(Input.GetKey))))
+                    {
+                        c.Emit(OpCodes.Pop);
+                        c.EmitDelegate(inputAction);
+
+                        rebinds++;
+                    }
+                }
             }
-            c.Index = 0;
+            catch (Exception ex)
+            {
+                Plugin.Logger.LogWarning($"Error IL Rebinding Key! ({key})\n" + ex);
+            }
+
+
+            // n is intentionally attempted to be rebound more than it should be, for all creatures and objects, just in case it is used in a camera offset
+            if (rebinds == 0 && key != "n")
+                Plugin.Logger.LogWarning($"Key was not rebound at all! ({key})");
         }
 
-        private static void MapPage_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
+        private static void RebindKeyDownIL(ILCursor c, string key, Func<bool> inputAction) => RebindKeyIL(c, key, inputAction, true);
 
-            // Toggle View Node Labels
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("j"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleViewNodeLabels.Value));
-            }
-            c.Index = 0;
-        }
-
-        private static void Handle_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-
-            // Change Handle Colour
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.changeHandleColor.Value));
-            }
-            c.Index = 0;
-        }
-
-        private static void CustomDecalRepresentation_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-
-            // Set Handles
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("l"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.setHandles.Value));
-            }
-            c.Index = 0;
-
-            // Increase Handles
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("k"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.increaseHandles.Value));
-            }
-            c.Index = 0;
-
-            // Decrease Handles
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("j"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.decreaseHandles.Value));
-            }
-            c.Index = 0;
-        }
-
-        private static void AboveCloudsView_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-
-            // Move Clouds View Object
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("t"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.moveCloudsViewObject.Value));
-            }
-            c.Index = 0;
-        }
+        private static void RebindKeyCodeIL(ILCursor c, int keyCode, Func<bool> inputAction) => RebindKeyIL(c, keyCode.ToString(), inputAction, false, keyCode);
 
 
 
         private static void RainWorldGame_RawUpdate(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
+            
+            RebindKeyIL(c, "h", () => Input.GetKey(Options.toggleDevToolsInterface.Value));
 
-            // Slow Down Time
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("a"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.slowDownTime.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "a", () => Input.GetKey(Options.slowDownTime.Value));
+            RebindKeyIL(c, "s", () => Input.GetKey(Options.speedUpTime.Value));
+            
+            RebindKeyIL(c, "l", () => Input.GetKey(Options.quarterPrecycleTime.Value));
 
-            // Speed Up Time
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("s"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.speedUpTime.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "p", () => Input.GetKey(Options.toggleTileAccessibility.Value));
+            RebindKeyIL(c, "m", () => Input.GetKey(Options.toggleDebugInfo.Value));
+            RebindKeyIL(c, "k", () => Input.GetKey(Options.toggleConsoleLog.Value));
+            
+            RebindKeyIL(c, "q", () => Input.GetKey(Options.unloadRooms.Value));
+            RebindKeyIL(c, "e", () => Input.GetKey(Options.setAIDestination.Value));
 
-            // Unload Rooms
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("q"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.unloadRooms.Value));
-            }
-            c.Index = 0;
-
-            // Toggle Tile Accessibility
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("p"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleTileAccessibility.Value));
-            }
-            c.Index = 0;
-
-            // Toggle Debug Info
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("m"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleDebugInfo.Value));
-            }
-            c.Index = 0;
-
-            // Toggle Console Log
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("k"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleConsoleLog.Value));
-            }
-            c.Index = 0;
-
-            // Toggle Main Interface
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("h"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.toggleDevToolsInterface.Value));
-            }
-            c.Index = 0;
 
             // Toggle Dev Tools
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("o"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            try
             {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) =>
+                c.Index = 0;
+
+                while (c.TryGotoNext(MoveType.After,
+                    x => x.MatchLdstr("o"),
+                    x => x.MatchCallOrCallvirt<Input>("GetKey")))
                 {
-                    wasDevToolsActive = self.devToolsActive;
-                    return Input.GetKey(Options.toggleDevTools.Value);
-                });
+                    c.Emit(OpCodes.Pop);
+                 
+                    c.Emit(OpCodes.Ldarg_0);
+                    c.EmitDelegate<Func<RainWorldGame, bool>>((self) =>
+                    {
+                        wasDevToolsActive = self.devToolsActive;
+                        return Input.GetKey(Options.toggleDevTools.Value);
+                    });
+                }
             }
-            c.Index = 0;
-
-            // Quarter Precycle Time
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("l"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
+            catch (Exception ex)
             {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.quarterPrecycleTime.Value));
+                Plugin.Logger.LogWarning($"Error IL Rebinding Toggle Dev Tools! Exception:\n" + ex);
             }
-            c.Index = 0;
-
-            // Set AI Destination
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("e"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.setAIDestination.Value));
-            }
-            c.Index = 0;
         }
 
         private static void RainWorldGame_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Restart Cycle
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("r"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.restartCycle.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "r", () => Input.GetKey(Options.restartCycle.Value));
         }
+
+
+
+        // Weird shennanagins goes on in here 
+        private static void Player_ProcessDebugInputs(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            RebindKeyDownIL(c, "0", () => Input.GetKeyDown(Options.cycleJumper.Value));
+            RebindKeyDownIL(c, "9", () => Input.GetKeyDown(Options.resetRain.Value));
+            RebindKeyDownIL(c, "8", () => Input.GetKeyDown(Options.killAllCreatures.Value));
+
+            RebindKeyDownIL(c, "5", () => Input.GetKeyDown(Options.spawnSpearmasterPearl.Value));
+            RebindKeyDownIL(c, "6", () => Input.GetKeyDown(Options.spawnHunterNeuron.Value));
+            RebindKeyDownIL(c, "7", () => Input.GetKeyDown(Options.spawnRivuletCell.Value));
+
+
+            RebindKeyCodeIL(c, 304, () => Input.GetKey(Options.earlyCycle.Value));
+            RebindKeyCodeIL(c, 308, () => Input.GetKey(Options.midCycle.Value));
+            RebindKeyCodeIL(c, 306, () => Input.GetKey(Options.lateCycle.Value));
+
+
+            // Enable/Disable Pipe Jumping
+            try
+            {
+                c.Index = 0;
+                ILLabel dest = null!;
+            
+                if (c.TryGotoNext(MoveType.Before,
+                    x => x.MatchLdloc(1),
+                    x => x.MatchCallOrCallvirt<Input>(nameof(Input.GetKey)),
+                    x => x.MatchBrfalse(out dest)))
+                {
+                    c.MoveAfterLabels();
+                    c.Emit(OpCodes.Ldarg_0);
+
+                    c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Options.entranceJumperEnabled.Value);
+                
+                    c.Emit(OpCodes.Brfalse, dest);
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.Logger.LogWarning($"Error IL Rebinding Pipe Jumper! Exception:\n" + ex);
+            }
+        }
+
+
+
+        private static void MiniMap_Update(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.changeMinimapLayer.Value));
+        }
+
+        private static void MapPage_Signal(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.changeMinimapLayer.Value));
+        }
+
+        private static void MapPage_Update(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            RebindKeyIL(c, "j", () => Input.GetKey(Options.toggleViewNodeLabels.Value));
+        }
+
+        private static void Handle_Update(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.changeHandleColor.Value));
+        }
+
+        private static void CustomDecalRepresentation_Update(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            RebindKeyIL(c, "l", () => Input.GetKey(Options.setHandles.Value));
+            RebindKeyIL(c, "k", () => Input.GetKey(Options.increaseHandles.Value));
+            RebindKeyIL(c, "j", () => Input.GetKey(Options.decreaseHandles.Value));
+        }
+
+        private static void AboveCloudsView_Update(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            RebindKeyIL(c, "t", () => Input.GetKey(Options.moveCloudsViewObject.Value));
+        }
+
+
 
         private static void Player_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Teleport Slugcat
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("v"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.teleportSlugcat.Value));
-            }
-            c.Index = 0;
-
-            // Fling Slugcat
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("w"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.flingSlugcat.Value));
-            }
-            c.Index = 0;
-
-            // Feed Slugcat
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("q"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.feedSlugcat.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "v", () => Input.GetKey(Options.teleportSlugcat.Value));
+            RebindKeyIL(c, "w", () => Input.GetKey(Options.flingSlugcat.Value));
+            RebindKeyIL(c, "q", () => Input.GetKey(Options.feedSlugcat.Value));
         }
+
+
 
         private static void VirtualMicrophone_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Set AI Destination
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("u"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.reloadAllSounds.Value));
-            }
-            c.Index = 0;
-
-            // Visualize Sounds
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("i"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.visualizeSounds.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "u", () => Input.GetKey(Options.reloadAllSounds.Value));
+            RebindKeyIL(c, "i", () => Input.GetKey(Options.visualizeSounds.Value));
         }
 
         private static void RoomCamera_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Offset Camera
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.offsetCamera.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
-        
         private static void Menu_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Slow Down Time
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("a"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.slowDownTime.Value));
-            }
-            c.Index = 0;
-
-            // Speed up Time
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("s"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.speedUpTime.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "a", () => Input.GetKey(Options.slowDownTime.Value));
+            RebindKeyIL(c, "s", () => Input.GetKey(Options.speedUpTime.Value));
         }
 
         private static void ForcedVisibilityVisualizer_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // ???
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
+
+
+            // wtf ???
             //while (c.TryGotoNext(MoveType.Before,
             //    x => x.MatchLdstr("b"),
             //    x => x.MatchCallOrCallvirt<Input>("GetKey")))
@@ -692,1432 +416,406 @@ namespace RebindDevTools
             //    c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.offsetCamera.Value));
             //}
             //c.Index = 0;
-
-            // Offset Camera
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.offsetCamera.Value));
-            }
-            c.Index = 0;
         }
+
 
 
         private static void SlugcatSelectMenu_StartGame(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Speed Up Start Game
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("s"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.speedUpStartGame.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "s", () => Input.GetKey(Options.speedUpStartGame.Value));
         }
 
         private static void CameraMovementEditor_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Add Point
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("j"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.addPoint.Value));
-            }
-            c.Index = 0;
-
-            // Remove Point
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("k"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.removePoint.Value));
-            }
-            c.Index = 0;
-
-            // Move All Points
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("l"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.moveAllPoints.Value));
-            }
-            c.Index = 0;
-
-            // Change Depth of Point
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("o"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.changeDepthOfPoint.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "j", () => Input.GetKey(Options.addPoint.Value));
+            RebindKeyIL(c, "k", () => Input.GetKey(Options.removePoint.Value));
+            RebindKeyIL(c, "l", () => Input.GetKey(Options.moveAllPoints.Value));
+            RebindKeyIL(c, "o", () => Input.GetKey(Options.changeDepthOfPoint.Value));
         }
 
         private static void SlideShowMenuScene_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Move Menu Scene
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.moveMenuScene.Value));
-            }
-            c.Index = 0;
-
-            // Save Menu Scene
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.saveMenuScene.Value));
-            }
-            c.Index = 0;
-
-            // Move Editor
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("m"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.moveSceneEditor.Value));
-            }
-            c.Index = 0;
-
-            // Play Scene
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("i"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.testPlayScene.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.moveMenuScene.Value));
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.saveMenuScene.Value));
+            RebindKeyIL(c, "m", () => Input.GetKey(Options.moveSceneEditor.Value));
+            RebindKeyIL(c, "i", () => Input.GetKey(Options.testPlayScene.Value));
         }
 
         private static void MenuScene_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Move Scene
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.moveMenuScene.Value));
-            }
-            c.Index = 0;
-
-            // Save Scene
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.saveMenuScene.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.moveMenuScene.Value));
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.saveMenuScene.Value));
         }
 
 
 
         private static void DeerAI_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Set Migratory Destination
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("e"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.setMigratoryDesination.Value));
-            }
-            c.Index = 0;
-
-            // Offset Camera
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.offsetCamera.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "e", () => Input.GetKey(Options.setMigratoryDesination.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void MirosBird_Act(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             // Remove Miros Bird Gravity (wtf?)
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("t"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.mirosAntiGravity.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "t", () => Input.GetKey(Options.mirosAntiGravity.Value));
         }
 
 
 
+        #region Creatures
+
         private static void DaddyLongLegs_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Drag Entity
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Cicada_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Drag Entity
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Centipede_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Drag Entity
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void BigSpider_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Drag Entity
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void BigEel_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Drag Entity
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
 
 
-        // I'm never touching this again
-        // (maybe I'll redo it if I somehow find the will lol)
-        #region Creatures
         private static void LanternMouse_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<LanternMouse, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<LanternMouse, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.flingVultures.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Vulture_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Drag Entity
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
 
-            // Fling Vultures
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("g"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.flingVultures.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "g", () => Input.GetKey(Options.flingVultures.Value));
         }
 
         private static void TentaclePlant_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<TentaclePlant, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<TentaclePlant, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void TempleGuard_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<TempleGuard, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<TempleGuard, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Spider_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<Spider, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Spider, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Scavenger_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<Scavenger, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Scavenger, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void PoleMimic_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
-            // Drag Entity
-            while (c.TryGotoNext(MoveType.Before,
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.Index += 2;
-                c.Emit(OpCodes.Pop);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<RainWorldGame, bool>>((self) => Input.GetKey(Options.dragEntities.Value));
-            }
-            c.Index = 0;
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void NeedleWorm_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<NeedleWorm, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<NeedleWorm, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void NeedleEgg_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<NeedleEgg, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<NeedleEgg, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Yeek_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MoreSlugcats.Yeek, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MoreSlugcats.Yeek, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void StowawayBug_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MoreSlugcats.StowawayBug, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MoreSlugcats.StowawayBug, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Inspector_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MoreSlugcats.Inspector, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MoreSlugcats.Inspector, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void BigJellyFish_DebugDrag(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MoreSlugcats.BigJellyFish, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MoreSlugcats.BigJellyFish, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void MirosBird_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MirosBird, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MirosBird, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Lizard_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<Lizard, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Lizard, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Leech_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<Leech, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Leech, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void JetFish_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<JetFish, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<JetFish, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void GarbageWorm_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<GarbageWorm, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<GarbageWorm, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
-        }
-
-        private static void Fly_Update(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Fly, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Fly, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void DropBug_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<DropBug, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<DropBug, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Deer_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<Deer, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Deer, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void EggBug_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<EggBug, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragEntities.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<EggBug, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragEntities.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
+
+
+
+        private static void Fly_Update(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            RebindKeyIL(c, "f", () => Input.GetKey(Options.pullBatflies.Value));
+        }
+
         #endregion
 
 
+
         #region Objects
+        
         private static void VultureGrub_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<VultureGrub, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
         
         private static void GooieDuck_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MoreSlugcats.GooieDuck, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MoreSlugcats.GooieDuck, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void GlowWeed_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MoreSlugcats.GlowWeed, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MoreSlugcats.GlowWeed, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void FireEgg_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MoreSlugcats.FireEgg, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MoreSlugcats.FireEgg, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void DandelionPeach_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<MoreSlugcats.DandelionPeach, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<MoreSlugcats.DandelionPeach, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void EggBugEgg_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<EggBugEgg, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<EggBugEgg, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void DangleFruit_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<DangleFruit, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<DangleFruit, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void JellyFish_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<JellyFish, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<JellyFish, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Hazer_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<Hazer, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Hazer, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void Snail_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<Snail, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<Snail, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void SlimeMold_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<SlimeMold, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<SlimeMold, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void SwollenWaterNut_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<SwollenWaterNut, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<SwollenWaterNut, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void SporePlant_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<SporePlant, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<SporePlant, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
 
         private static void TubeWorm_Update(ILContext il)
         {
-            ILCursor c = new ILCursor(il);
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("b"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
+            ILCursor c = new(il);
 
-                c.EmitDelegate<Func<TubeWorm, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.dragObjects.Value);
-                });
-            }
-
-            c.Index = 0;
-
-            while (c.TryGotoNext(
-                x => x.MatchLdstr("n"),
-                x => x.MatchCallOrCallvirt<Input>("GetKey")))
-            {
-                c.RemoveRange(2);
-                c.Emit(OpCodes.Ldarg_0);
-
-                c.EmitDelegate<Func<TubeWorm, bool>>((self) =>
-                {
-                    return Input.GetKey(Options.offsetCamera.Value);
-                });
-            }
+            RebindKeyIL(c, "b", () => Input.GetKey(Options.dragObjects.Value));
+            RebindKeyIL(c, "n", () => Input.GetKey(Options.offsetCamera.Value));
         }
+
         #endregion
     }
 }

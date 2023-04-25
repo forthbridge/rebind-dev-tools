@@ -1,9 +1,9 @@
 {
 	"id": "rebinddevtools",
 	"name": "Rebind Dev Tools",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"authors": "forthbridge",
-	"description": "Provides a Remix config to rebind all of the default Dev Tools keybinds!<LINE><LINE>Also provides config for whether Dev Tools should be enabled by default or not.<LINE><LINE>Source: https://github.com/forthbridge/rebind-dev-tools",
+	"description": "Provides a Remix config to rebind all of the default Dev Tools keybinds!<LINE><LINE>Also provides config for whether Dev Tools should be enabled by default or not.<LINE><LINE><LINE>Source: https://github.com/forthbridge/rebind-dev-tools",
 	"requirements": [],
 	"requirements_names": [],
 	"tags": ["Tools", "Accessibility"],

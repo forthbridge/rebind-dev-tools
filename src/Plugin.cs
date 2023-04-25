@@ -1,9 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using System;
 using System.Security.Permissions;
 using System.Security;
-using UnityEngine;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -18,7 +16,7 @@ namespace RebindDevTools
     {
         public static new ManualLogSource Logger { get; private set; } = null!;
 
-        public const string VERSION = "1.0.1";
+        public const string VERSION = "1.0.2";
         public const string MOD_NAME = "Rebind Dev Tools";
         public const string MOD_ID = "rebinddevtools";
         public const string AUTHOR = "forthbridge";
@@ -31,6 +29,6 @@ namespace RebindDevTools
             Execute("Joar");
         }
 
-        private void Execute(string who) => Debug.Log($"Executed {who} for splitting the binds across literally every creature script, wtf man.");
+        private void Execute(string who) => Logger.LogMessage($"Executed {who} for splitting the binds across literally every creature script, wtf man.");
     }
 }

@@ -8,7 +8,7 @@ namespace RebindDevTools
     // https://github.com/SchuhBaum/SBCameraScroll/blob/Rain-World-v1.9/SourceCode/MainModOptions.cs
     public class Options : OptionInterface
     {
-        public static Options instance = new Options();
+        public static Options instance = new();
         private const string AUTHORS_NAME = "forthbridge";
 
         #region Options
@@ -103,16 +103,16 @@ namespace RebindDevTools
 
 
         public static Configurable<KeyCode> addPoint = instance.config.Bind("addPoint", KeyCode.J, new ConfigurableInfo(
-            "???", null, "", "Add Point"));
+            "...", null, "", "Add Point"));
 
         public static Configurable<KeyCode> removePoint = instance.config.Bind("removePoint", KeyCode.K, new ConfigurableInfo(
-            "???", null, "", "Remove Point"));
+            "...", null, "", "Remove Point"));
 
         public static Configurable<KeyCode> moveAllPoints = instance.config.Bind("moveAllPoints", KeyCode.L, new ConfigurableInfo(
-            "???", null, "", "Move All Points"));
+            "...", null, "", "Move All Points"));
 
         public static Configurable<KeyCode> changeDepthOfPoint = instance.config.Bind("changeDepthOfPoint", KeyCode.O, new ConfigurableInfo(
-            "???", null, "", "Change Depth of Point"));
+            "...", null, "", "Change Depth of Point"));
 
 
 
@@ -123,37 +123,37 @@ namespace RebindDevTools
             "Saves the current menu scene to disk.", null, "", "Save Menu Scene"));
 
         public static Configurable<KeyCode> moveSceneEditor = instance.config.Bind("moveSceneEditor", KeyCode.M, new ConfigurableInfo(
-            "???", null, "", "Move Scene Editor"));
+            "...", null, "", "Move Scene Editor"));
 
         public static Configurable<KeyCode> testPlayScene = instance.config.Bind("testPlayScene", KeyCode.I, new ConfigurableInfo(
-            "???", null, "", "Test Play Scene"));
+            "...", null, "", "Test Play Scene"));
 
 
 
         public static Configurable<KeyCode> mirosAntiGravity = instance.config.Bind("mirosAntiGravity", KeyCode.T, new ConfigurableInfo(
-            "???", null, "", "Disable Miros Bird Gravity"));
+            "...", null, "", "Disable Miros Bird Gravity"));
 
 
 
         public static Configurable<KeyCode> changeMinimapLayer = instance.config.Bind("changeMinimapLayer", KeyCode.N, new ConfigurableInfo(
-            "???", null, "", "Change Minimap Layer"));
+            "...", null, "", "Change Minimap Layer"));
 
         public static Configurable<KeyCode> toggleViewNodeLabels = instance.config.Bind("toggleViewNodeLabels", KeyCode.J, new ConfigurableInfo(
-            "???", null, "", "Toggle View Node Labels"));
+            "...", null, "", "Toggle View Node Labels"));
 
         public static Configurable<KeyCode> changeHandleColor = instance.config.Bind("changeHandleColor", KeyCode.M, new ConfigurableInfo(
-            "???", null, "", "Change Handle Color"));
+            "...", null, "", "Change Handle Color"));
 
         public static Configurable<KeyCode> setHandles = instance.config.Bind("setHandles", KeyCode.I, new ConfigurableInfo(
-            "???", null, "", "Set Handles"));
+            "...", null, "", "Set Handles"));
 
         public static Configurable<KeyCode> increaseHandles = instance.config.Bind("increaseHandles", KeyCode.N, new ConfigurableInfo(
-            "???", null, "", "Increase Handles"));
+            "...", null, "", "Increase Handles"));
 
         public static Configurable<KeyCode> decreaseHandles = instance.config.Bind("decreaseHandles", KeyCode.J, new ConfigurableInfo(
-            "???", null, "", "Decrease Handles"));
+            "...", null, "", "Decrease Handles"));
 
-        public static Configurable<KeyCode> moveCloudsViewObject = instance.config.Bind("moveCloudsViewObject", KeyCode.M, new ConfigurableInfo(
+        public static Configurable<KeyCode> moveCloudsViewObject = instance.config.Bind("moveCloudsViewObject", KeyCode.T, new ConfigurableInfo(
             "Allows the hovered part of the current background AboveCloudsView to be moved freely.", null, "", "Move Clouds View Object"));
 
         public static Configurable<KeyCode> speedUpStartGame = instance.config.Bind("speedUpStartGame", KeyCode.S, new ConfigurableInfo(
@@ -195,14 +195,14 @@ namespace RebindDevTools
         #endregion
 
         #region Parameters
+
         private readonly float spacing = 20f;
         private readonly float fontHeight = 20f;
         private readonly int numberOfCheckboxes = 2;
         private readonly float checkBoxSize = 60.0f;
-        private float CheckBoxWithSpacing => checkBoxSize + 0.25f * spacing;
-        #endregion
 
-        #region Variables
+        private float CheckBoxWithSpacing => checkBoxSize + 0.25f * spacing;
+
         private Vector2 marginX = new();
         private Vector2 pos = new();
 
@@ -211,18 +211,11 @@ namespace RebindDevTools
         private readonly List<Configurable<bool>> checkBoxConfigurables = new();
         private readonly List<OpLabel> checkBoxesTextLabels = new();
 
-        private readonly List<Configurable<string>> comboBoxConfigurables = new();
-        private readonly List<List<ListItem>> comboBoxLists = new();
-        private readonly List<bool> comboBoxAllowEmpty = new();
-        private readonly List<OpLabel> comboBoxesTextLabels = new();
-
-        private readonly List<Configurable<int>> sliderConfigurables = new();
-        private readonly List<string> sliderMainTextLabels = new();
-        private readonly List<OpLabel> sliderTextLabelsLeft = new();
-        private readonly List<OpLabel> sliderTextLabelsRight = new();
-
         private readonly List<OpLabel> textLabels = new();
+
         #endregion
+
+
 
         private const int NUMBER_OF_TABS = 6;
 
@@ -233,6 +226,7 @@ namespace RebindDevTools
             int tabIndex = -1;
 
             #region General
+
             AddTab(ref tabIndex, "General");
             AddNewLine(-1);
 
@@ -242,44 +236,46 @@ namespace RebindDevTools
 
             AddNewLine(3);
 
-            DrawKeybinders(toggleDevTools, ref Tabs[tabIndex]);
-            DrawKeybinders(toggleDevToolsInterface, ref Tabs[tabIndex]);
+            DrawKeybinder(toggleDevTools, ref Tabs[tabIndex]);
+            DrawKeybinder(toggleDevToolsInterface, ref Tabs[tabIndex]);
 
             AddNewLine(2);
             
-            DrawKeybinders(feedSlugcat, ref Tabs[tabIndex]);
-            DrawKeybinders(restartCycle, ref Tabs[tabIndex]);
+            DrawKeybinder(feedSlugcat, ref Tabs[tabIndex]);
+            DrawKeybinder(restartCycle, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
-            DrawKeybinders(speedUpTime, ref Tabs[tabIndex]);
-            DrawKeybinders(slowDownTime, ref Tabs[tabIndex]);
-            DrawKeybinders(speedUpStartGame, ref Tabs[tabIndex]);
+            DrawKeybinder(speedUpTime, ref Tabs[tabIndex]);
+            DrawKeybinder(slowDownTime, ref Tabs[tabIndex]);
+            DrawKeybinder(speedUpStartGame, ref Tabs[tabIndex]);
 
             AddNewLine(-1);
 
             DrawBox(ref Tabs[tabIndex]);
+
             #endregion
 
 
             #region Movement
+
             AddTab(ref tabIndex, "Movement");
             AddNewLine(2);
 
-            DrawKeybinders(teleportSlugcat, ref Tabs[tabIndex]);
-            DrawKeybinders(flingSlugcat, ref Tabs[tabIndex]);
+            DrawKeybinder(teleportSlugcat, ref Tabs[tabIndex]);
+            DrawKeybinder(flingSlugcat, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
-            DrawKeybinders(dragEntities, ref Tabs[tabIndex]);
-            DrawKeybinders(dragObjects, ref Tabs[tabIndex]);
+            DrawKeybinder(dragEntities, ref Tabs[tabIndex]);
+            DrawKeybinder(dragObjects, ref Tabs[tabIndex]);
 
-            DrawKeybinders(pullBatflies, ref Tabs[tabIndex]);
-            DrawKeybinders(flingVultures, ref Tabs[tabIndex]);
+            DrawKeybinder(pullBatflies, ref Tabs[tabIndex]);
+            DrawKeybinder(flingVultures, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
-            DrawKeybinders(offsetCamera, ref Tabs[tabIndex]);
+            DrawKeybinder(offsetCamera, ref Tabs[tabIndex]);
 
             AddNewLine(-2);
 
@@ -289,112 +285,124 @@ namespace RebindDevTools
             AddNewLine(1);
 
             DrawBox(ref Tabs[tabIndex]);
+
             #endregion
 
 
             #region Debugging
+
             AddTab(ref tabIndex, "Debugging");
             AddNewLine(2);
 
-            DrawKeybinders(toggleDebugInfo, ref Tabs[tabIndex]);
-            DrawKeybinders(toggleConsoleLog, ref Tabs[tabIndex]);
-            DrawKeybinders(killAllCreatures, ref Tabs[tabIndex]);
+            DrawKeybinder(toggleDebugInfo, ref Tabs[tabIndex]);
+            DrawKeybinder(toggleConsoleLog, ref Tabs[tabIndex]);
+            DrawKeybinder(killAllCreatures, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
-            DrawKeybinders(visualizeSounds, ref Tabs[tabIndex]);
-            DrawKeybinders(reloadAllSounds, ref Tabs[tabIndex]);
-            DrawKeybinders(unloadRooms, ref Tabs[tabIndex]);
+            DrawKeybinder(visualizeSounds, ref Tabs[tabIndex]);
+            DrawKeybinder(reloadAllSounds, ref Tabs[tabIndex]);
+            DrawKeybinder(unloadRooms, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
-            DrawKeybinders(toggleTileAccessibility, ref Tabs[tabIndex]);
-            DrawKeybinders(setAIDestination, ref Tabs[tabIndex]);
-            DrawKeybinders(setMigratoryDesination, ref Tabs[tabIndex]);
+            DrawKeybinder(toggleTileAccessibility, ref Tabs[tabIndex]);
+            DrawKeybinder(setAIDestination, ref Tabs[tabIndex]);
+            DrawKeybinder(setMigratoryDesination, ref Tabs[tabIndex]);
             //DrawKeybinders(mirosAntiGravity, ref Tabs[tabIndex]);
 
             AddNewLine(-2);
 
             DrawBox(ref Tabs[tabIndex]);
+
             #endregion
 
 
             #region Cycle & Items
+
             AddTab(ref tabIndex, "Cycle & Items");
             AddNewLine(2);
 
-            DrawKeybinders(cycleJumper, ref Tabs[tabIndex]);
+            DrawKeybinder(cycleJumper, ref Tabs[tabIndex]);
 
             AddNewLine(1);
 
-            DrawKeybinders(earlyCycle, ref Tabs[tabIndex]);
-            DrawKeybinders(midCycle, ref Tabs[tabIndex]);
-            DrawKeybinders(lateCycle, ref Tabs[tabIndex]);
+            DrawKeybinder(earlyCycle, ref Tabs[tabIndex]);
+            DrawKeybinder(midCycle, ref Tabs[tabIndex]);
+            DrawKeybinder(lateCycle, ref Tabs[tabIndex]);
 
             AddNewLine(1);
 
-            DrawKeybinders(resetRain, ref Tabs[tabIndex]);
-            DrawKeybinders(quarterPrecycleTime, ref Tabs[tabIndex]);
+            DrawKeybinder(resetRain, ref Tabs[tabIndex]);
+            DrawKeybinder(quarterPrecycleTime, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
-            DrawKeybinders(spawnSpearmasterPearl, ref Tabs[tabIndex]);
-            DrawKeybinders(spawnHunterNeuron, ref Tabs[tabIndex]);
-            DrawKeybinders(spawnRivuletCell, ref Tabs[tabIndex]);
+            DrawKeybinder(spawnSpearmasterPearl, ref Tabs[tabIndex]);
+            DrawKeybinder(spawnHunterNeuron, ref Tabs[tabIndex]);
+            DrawKeybinder(spawnRivuletCell, ref Tabs[tabIndex]);
 
             AddNewLine(-2);
 
             DrawBox(ref Tabs[tabIndex]);
+
             #endregion
 
 
             #region Dev Interface
+
             AddTab(ref tabIndex, "Dev Interface");
             AddNewLine(2);
 
-            DrawKeybinders(moveCloudsViewObject, ref Tabs[tabIndex]);
+            DrawKeybinder(moveCloudsViewObject, ref Tabs[tabIndex]);
 
             AddNewLine(2);  
 
-            DrawKeybinders(changeMinimapLayer, ref Tabs[tabIndex]);
-            DrawKeybinders(toggleViewNodeLabels, ref Tabs[tabIndex]);
+            DrawKeybinder(changeMinimapLayer, ref Tabs[tabIndex]);
+            DrawKeybinder(toggleViewNodeLabels, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
-            DrawKeybinders(setHandles, ref Tabs[tabIndex]);
-            DrawKeybinders(increaseHandles, ref Tabs[tabIndex]);
-            DrawKeybinders(decreaseHandles, ref Tabs[tabIndex]);
-            DrawKeybinders(changeHandleColor, ref Tabs[tabIndex]);
+            DrawKeybinder(setHandles, ref Tabs[tabIndex]);
+            DrawKeybinder(increaseHandles, ref Tabs[tabIndex]);
+            DrawKeybinder(decreaseHandles, ref Tabs[tabIndex]);
+            DrawKeybinder(changeHandleColor, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
             DrawBox(ref Tabs[tabIndex]);
+
             #endregion
 
 
             #region Scene Editor
+
             AddTab(ref tabIndex, "Scene Editor");
             AddNewLine(2);
 
-            DrawKeybinders(moveMenuScene, ref Tabs[tabIndex]);
-            DrawKeybinders(saveMenuScene, ref Tabs[tabIndex]);
-            DrawKeybinders(moveSceneEditor, ref Tabs[tabIndex]);
-            DrawKeybinders(testPlayScene, ref Tabs[tabIndex]);
+            DrawKeybinder(moveMenuScene, ref Tabs[tabIndex]);
+            DrawKeybinder(saveMenuScene, ref Tabs[tabIndex]);
+            DrawKeybinder(moveSceneEditor, ref Tabs[tabIndex]);
+            DrawKeybinder(testPlayScene, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
-            DrawKeybinders(addPoint, ref Tabs[tabIndex]);
-            DrawKeybinders(removePoint, ref Tabs[tabIndex]);
-            DrawKeybinders(moveAllPoints, ref Tabs[tabIndex]);
-            DrawKeybinders(changeDepthOfPoint, ref Tabs[tabIndex]);
+            DrawKeybinder(addPoint, ref Tabs[tabIndex]);
+            DrawKeybinder(removePoint, ref Tabs[tabIndex]);
+            DrawKeybinder(moveAllPoints, ref Tabs[tabIndex]);
+            DrawKeybinder(changeDepthOfPoint, ref Tabs[tabIndex]);
 
             AddNewLine(2);
 
             DrawBox(ref Tabs[tabIndex]);
+
             #endregion
         }
 
+
+
         #region UI Elements
+
         private void AddTab(ref int tabIndex, string tabName)
         {
             tabIndex++;
@@ -414,6 +422,7 @@ namespace RebindDevTools
             AddBox();
         }
 
+
         private void InitializeMarginAndPos()
         {
             marginX = new Vector2(50f, 550f);
@@ -422,14 +431,15 @@ namespace RebindDevTools
 
         private void AddNewLine(float spacingModifier = 1f)
         {
-            pos.x = marginX.x; // left margin
+            pos.x = marginX.x;
             pos.y -= spacingModifier * spacing;
         }
+
 
         private void AddBox()
         {
             marginX += new Vector2(spacing, -spacing);
-            boxEndPositions.Add(pos.y); // end position > start position
+            boxEndPositions.Add(pos.y);
             AddNewLine();
         }
 
@@ -445,7 +455,8 @@ namespace RebindDevTools
             boxEndPositions.RemoveAt(lastIndex);
         }
 
-        private void DrawKeybinders(Configurable<KeyCode> configurable, ref OpTab tab)
+
+        private void DrawKeybinder(Configurable<KeyCode> configurable, ref OpTab tab)
         {
             string name = (string)configurable.info.Tags[0];
 
@@ -461,6 +472,7 @@ namespace RebindDevTools
 
             AddNewLine(2);
         }
+
 
         private void AddCheckBox(Configurable<bool> configurable, string text)
         {
@@ -480,10 +492,12 @@ namespace RebindDevTools
             for (int checkBoxIndex = 0; checkBoxIndex < checkBoxConfigurables.Count; ++checkBoxIndex)
             {
                 Configurable<bool> configurable = checkBoxConfigurables[checkBoxIndex];
+
                 OpCheckBox checkBox = new(configurable, new Vector2(_posX, pos.y))
                 {
                     description = configurable.info?.description ?? ""
                 };
+
                 tab.AddItems(checkBox);
                 _posX += CheckBoxWithSpacing;
 
@@ -511,135 +525,28 @@ namespace RebindDevTools
             checkBoxesTextLabels.Clear();
         }
 
-        private void AddComboBox(Configurable<string> configurable, List<ListItem> list, string text, bool allowEmpty = false)
-        {
-            OpLabel opLabel = new(new Vector2(), new Vector2(0.0f, fontHeight), text, FLabelAlignment.Center, false);
-            comboBoxesTextLabels.Add(opLabel);
-            comboBoxConfigurables.Add(configurable);
-            comboBoxLists.Add(list);
-            comboBoxAllowEmpty.Add(allowEmpty);
-        }
-
-        private void DrawComboBoxes(ref OpTab tab)
-        {
-            if (comboBoxConfigurables.Count != comboBoxesTextLabels.Count) return;
-            if (comboBoxConfigurables.Count != comboBoxLists.Count) return;
-            if (comboBoxConfigurables.Count != comboBoxAllowEmpty.Count) return;
-
-            float offsetX = (marginX.y - marginX.x) * 0.1f;
-            float width = (marginX.y - marginX.x) * 0.4f;
-
-            for (int comboBoxIndex = 0; comboBoxIndex < comboBoxConfigurables.Count; ++comboBoxIndex)
-            {
-                AddNewLine(1.25f);
-                pos.x += offsetX;
-
-                OpLabel opLabel = comboBoxesTextLabels[comboBoxIndex];
-                opLabel.pos = pos;
-                opLabel.size += new Vector2(width, 2f); // size.y is already set
-                pos.x += width;
-
-                Configurable<string> configurable = comboBoxConfigurables[comboBoxIndex];
-                OpComboBox comboBox = new(configurable, pos, width, comboBoxLists[comboBoxIndex])
-                {
-                    allowEmpty = comboBoxAllowEmpty[comboBoxIndex],
-                    description = configurable.info?.description ?? ""
-                };
-                tab.AddItems(opLabel, comboBox);
-
-                // don't add a new line on the last element
-                if (comboBoxIndex < comboBoxConfigurables.Count - 1)
-                {
-                    AddNewLine();
-                    pos.x = marginX.x;
-                }
-            }
-
-            comboBoxesTextLabels.Clear();
-            comboBoxConfigurables.Clear();
-            comboBoxLists.Clear();
-            comboBoxAllowEmpty.Clear();
-        }
-
-        private void AddSlider(Configurable<int> configurable, string text, string sliderTextLeft = "", string sliderTextRight = "")
-        {
-            sliderConfigurables.Add(configurable);
-            sliderMainTextLabels.Add(text);
-            sliderTextLabelsLeft.Add(new OpLabel(new Vector2(), new Vector2(), sliderTextLeft, alignment: FLabelAlignment.Right)); // set pos and size when drawing
-            sliderTextLabelsRight.Add(new OpLabel(new Vector2(), new Vector2(), sliderTextRight, alignment: FLabelAlignment.Left));
-        }
-
-        private void DrawSliders(ref OpTab tab)
-        {
-            if (sliderConfigurables.Count != sliderMainTextLabels.Count) return;
-            if (sliderConfigurables.Count != sliderTextLabelsLeft.Count) return;
-            if (sliderConfigurables.Count != sliderTextLabelsRight.Count) return;
-
-            float width = marginX.y - marginX.x;
-            float sliderCenter = marginX.x + 0.5f * width;
-            float sliderLabelSizeX = 0.2f * width;
-            float sliderSizeX = width - 2f * sliderLabelSizeX - spacing;
-
-            for (int sliderIndex = 0; sliderIndex < sliderConfigurables.Count; ++sliderIndex)
-            {
-                AddNewLine(2f);
-
-                OpLabel opLabel = sliderTextLabelsLeft[sliderIndex];
-                opLabel.pos = new Vector2(marginX.x, pos.y + 5f);
-                opLabel.size = new Vector2(sliderLabelSizeX, fontHeight);
-                tab.AddItems(opLabel);
-
-                Configurable<int> configurable = sliderConfigurables[sliderIndex];
-                OpSlider slider = new(configurable, new Vector2(sliderCenter - 0.5f * sliderSizeX, pos.y), (int)sliderSizeX)
-                {
-                    size = new Vector2(sliderSizeX, fontHeight),
-                    description = configurable.info?.description ?? ""
-                };
-                tab.AddItems(slider);
-
-                opLabel = sliderTextLabelsRight[sliderIndex];
-                opLabel.pos = new Vector2(sliderCenter + 0.5f * sliderSizeX + 0.5f * spacing, pos.y + 5f);
-                opLabel.size = new Vector2(sliderLabelSizeX, fontHeight);
-                tab.AddItems(opLabel);
-
-                AddTextLabel(sliderMainTextLabels[sliderIndex]);
-                DrawTextLabels(ref tab);
-
-                if (sliderIndex < sliderConfigurables.Count - 1)
-                {
-                    AddNewLine();
-                }
-            }
-
-            sliderConfigurables.Clear();
-            sliderMainTextLabels.Clear();
-            sliderTextLabelsLeft.Clear();
-            sliderTextLabelsRight.Clear();
-        }
 
         private void AddTextLabel(string text, FLabelAlignment alignment = FLabelAlignment.Center, bool bigText = false)
         {
             float textHeight = (bigText ? 2f : 1f) * fontHeight;
+
             if (textLabels.Count == 0)
-            {
                 pos.y -= textHeight;
-            }
 
             OpLabel textLabel = new(new Vector2(), new Vector2(20f, textHeight), text, alignment, bigText) // minimal size.x = 20f
             {
                 autoWrap = true
             };
+
             textLabels.Add(textLabel);
         }
 
         private void DrawTextLabels(ref OpTab tab)
         {
-            if (textLabels.Count == 0)
-            {
-                return;
-            }
+            if (textLabels.Count == 0) return;
 
             float width = (marginX.y - marginX.x) / textLabels.Count;
+            
             foreach (OpLabel textLabel in textLabels)
             {
                 textLabel.pos = pos;
@@ -651,6 +558,7 @@ namespace RebindDevTools
             pos.x = marginX.x;
             textLabels.Clear();
         }
+
         #endregion
     }
 }
