@@ -1,0 +1,17 @@
+{
+  "Title": "Rebind Dev Tools",
+  "Description": "Provides a Remix config to rebind all of the default Dev Tools keybinds!\u003CLINE\u003E\u003CLINE\u003EAlso provides config for whether Dev Tools should be enabled by default or not.\u003CLINE\u003E\u003CLINE\u003E\u003CLINE\u003ESource: https://github.com/forthbridge/rebind-dev-tools",
+  "ID": "rebinddevtools",
+  "Version": "1.1.0",
+  "TargetGameVersion": "v1.9.14",
+  "Requirements": "",
+  "RequirementNames": "",
+  "Authors": "forthbridge",
+  "Visibility": "Public",
+  "Tags": [
+    "Accessibility",
+    "Tools"
+  ],
+  "WorkshopID": 2940372957,
+  "UploadFilesOnly": true
+}
